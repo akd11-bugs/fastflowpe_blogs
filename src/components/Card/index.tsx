@@ -1,14 +1,22 @@
 'use client'
 import { cn } from '@/utilities/ui'
+import { stringToColor } from '@/utilities/stringToColor'
+import { stringToIcon } from '@/utilities/stringToIcon'
+import { formatDateTime } from '@/utilities/formatDateTime'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<
+  Post,
+  'slug' | 'categories' | 'meta' | 'title' | 'heroImage' | 'publishedAt' | 'populatedAuthors'
+> & {
+  readingTime?: number
+}
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -21,59 +29,118 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const {
+    slug,
+    categories,
+    meta,
+    title,
+    heroImage,
+    publishedAt,
+    populatedAuthors,
+    readingTime,
+  } = doc || {}
   const { description, image: metaImage } = meta || {}
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
+  const imageToUse = heroImage || metaImage
+
+  const validCategories = (categories || []).filter(
+    (category): category is Exclude<typeof category, number> =>
+      typeof category === 'object' && category !== null,
+  )
+  const hasCategories = showCategories && validCategories.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
+  const authorName = populatedAuthors?.map((author) => author?.name).filter(Boolean)[0]
+  const avatarColor = stringToColor(authorName || titleToUse || 'post')
+
+  const primaryCategoryTitle = validCategories[0]?.title || undefined
+  const accentColor = stringToColor(primaryCategoryTitle || titleToUse || 'post')
+
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'group relative h-full flex flex-col border-2 border-border rounded-2xl overflow-hidden bg-card hover:cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
+        accentColor.accentBorder,
         className,
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+      {/* Bold color-block reveal — a solid accent bar grows in on hover instead of
+          a subtle fade, matching brand.dropbox.com's graphic/immediate hover language. */}
+      <div
+        className={cn(
+          'absolute inset-x-0 top-0 h-0 group-hover:h-2 transition-[height] duration-300 ease-out z-10',
+          accentColor.solidBg,
+        )}
+      />
+
+      <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
+        {!imageToUse && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted to-secondary text-muted-foreground text-sm">
+            No image
+          </div>
+        )}
+        {imageToUse && typeof imageToUse !== 'string' && (
+          <Media resource={imageToUse} size="33vw" imgClassName="object-cover w-full h-full" />
+        )}
       </div>
-      <div className="p-4">
-        {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object') {
-                const { title: titleFromCategory } = category
+      <div className="p-5 flex flex-col gap-3 flex-1">
+        {hasCategories && (
+          <div className="flex flex-wrap gap-2">
+            {validCategories.map((category, index) => {
+              const categoryTitle = category.title || 'Untitled category'
+              const color = stringToColor(categoryTitle)
+              const Icon = stringToIcon(categoryTitle)
 
-                const categoryTitle = titleFromCategory || 'Untitled category'
-
-                const isLast = index === categories.length - 1
-
-                return (
-                  <Fragment key={index}>
-                    {categoryTitle}
-                    {!isLast && <Fragment>, &nbsp;</Fragment>}
-                  </Fragment>
-                )
-              }
-
-              return null
+              return (
+                <span
+                  key={index}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
+                    color.solidBg,
+                    color.solidText,
+                  )}
+                >
+                  <Icon className="h-3 w-3" />
+                  {categoryTitle}
+                </span>
+              )
             })}
           </div>
         )}
+
         {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
+          <h3 className="text-xl font-bold leading-snug line-clamp-2 tracking-tight">
+            <Link className="not-prose text-foreground transition-colors" href={href} ref={link.ref}>
+              {titleToUse}
+            </Link>
+          </h3>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+
+        {description && (
+          <p className="text-sm text-muted-foreground line-clamp-2">{sanitizedDescription}</p>
+        )}
+
+        <div className="flex items-center gap-2 pt-2 mt-auto border-t border-border text-xs text-muted-foreground">
+          {authorName && (
+            <div
+              className={cn(
+                'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold uppercase',
+                avatarColor.bg,
+                avatarColor.text,
+              )}
+            >
+              {authorName.charAt(0)}
+            </div>
+          )}
+          {authorName && <span className="font-medium text-foreground">{authorName}</span>}
+          {authorName && (publishedAt || readingTime) && <span aria-hidden>&middot;</span>}
+          {publishedAt && <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>}
+          {publishedAt && readingTime && <span aria-hidden>&middot;</span>}
+          {readingTime && <span>{readingTime} min read</span>}
+        </div>
       </div>
     </article>
   )

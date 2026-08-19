@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// This schema manages its own tables in the same Postgres instance Payload CMS uses.
+// It intentionally never defines models for Payload's own collections (Users, Posts,
+// Categories, Media, Pages) — those are owned and migrated by Payload itself.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Starter models — replace with your own
+model Note {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  createdAt DateTime @default(now())
+  tags      Tag[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  notes Note[]
+}

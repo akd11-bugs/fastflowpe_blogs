@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { gridPosition } from '@/fields/gridPosition'
+
 export const MediaBlock: Block = {
   slug: 'mediaBlock',
   interfaceName: 'MediaBlock',
@@ -10,5 +12,6 @@ export const MediaBlock: Block = {
       relationTo: 'media',
       required: true,
     },
+    gridPosition(),
   ],
 }

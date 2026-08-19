@@ -61,6 +61,9 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // Prisma Postgres's connection layer doesn't support the raw catalog
+    // introspection query push-mode relies on — use migrations only instead.
+    push: false,
   }),
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),

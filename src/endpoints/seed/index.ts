@@ -1,4 +1,4 @@
-import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
+import type { CollectionSlug, Payload, PayloadRequest, File } from 'payload'
 
 import { contactForm as contactFormData } from './contact-form'
 import { contact as contactPageData } from './contact-page'
@@ -19,8 +19,6 @@ const collections: CollectionSlug[] = [
   'form-submissions',
   'search',
 ]
-
-const globals: GlobalSlug[] = ['header', 'footer']
 
 const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
@@ -45,18 +43,20 @@ export const seed = async ({
 
   // clear the database
   await Promise.all(
-    globals.map((global) =>
+    [
       payload.updateGlobal({
-        slug: global,
-        data: {
-          navItems: [],
-        },
+        slug: 'header',
+        data: { navItems: [] },
         depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
+        context: { disableRevalidate: true },
       }),
-    ),
+      payload.updateGlobal({
+        slug: 'footer',
+        data: { columns: [], legalLinks: [] },
+        depth: 0,
+        context: { disableRevalidate: true },
+      }),
+    ] satisfies Promise<unknown>[],
   )
 
   await Promise.all(
@@ -245,31 +245,38 @@ export const seed = async ({
     payload.updateGlobal({
       slug: 'footer',
       data: {
-        navItems: [
+        newsletterHeading: "Don't miss out",
+        newsletterDescription: 'Enter your email for news and updates',
+        columns: [
           {
-            link: {
-              type: 'custom',
-              label: 'Admin',
-              url: '/admin',
-            },
+            title: 'Blog',
+            navItems: [
+              {
+                link: {
+                  type: 'custom',
+                  label: 'Posts',
+                  url: '/posts',
+                },
+              },
+            ],
           },
           {
-            link: {
-              type: 'custom',
-              label: 'Source Code',
-              newTab: true,
-              url: 'https://github.com/payloadcms/payload/tree/3.x/templates/website',
-            },
-          },
-          {
-            link: {
-              type: 'custom',
-              label: 'Payload',
-              newTab: true,
-              url: 'https://payloadcms.com/',
-            },
+            title: 'Company',
+            navItems: [
+              {
+                link: {
+                  type: 'reference',
+                  label: 'Contact',
+                  reference: {
+                    relationTo: 'pages',
+                    value: contactPage.id,
+                  },
+                },
+              },
+            ],
           },
         ],
+        legalLinks: [],
       },
     }),
   ])

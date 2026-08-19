@@ -12,6 +12,9 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getReadingTime } from '@/utilities/getReadingTime'
+import { ReadingProgress } from '@/components/ReadingProgress'
+import { Breadcrumbs } from '@/components/Breadcrumbs'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
@@ -51,19 +54,36 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  const readingTime = getReadingTime(post.content)
+
   return (
     <article className="pt-16 pb-16">
       <PageClient />
+
+      <ReadingProgress />
 
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
 
-      <PostHero post={post} />
+      <PostHero post={post} readingTime={readingTime} />
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
+          <Breadcrumbs
+            items={[
+              { label: 'Blog', href: '/posts' },
+              ...(post.categories || [])
+                .filter((category): category is Exclude<typeof category, number> => typeof category === 'object')
+                .slice(0, 1)
+                .map((category) => ({
+                  label: category.title || 'Untitled category',
+                  href: category.slug ? `/posts?category=${category.slug}` : undefined,
+                })),
+              { label: post.title },
+            ]}
+          />
           <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts

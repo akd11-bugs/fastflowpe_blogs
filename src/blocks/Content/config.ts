@@ -8,6 +8,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { gridPosition } from '@/fields/gridPosition'
 
 const columnFields: Field[] = [
   {
@@ -75,5 +76,6 @@ export const Content: Block = {
       },
       fields: columnFields,
     },
+    gridPosition(),
   ],
 }
