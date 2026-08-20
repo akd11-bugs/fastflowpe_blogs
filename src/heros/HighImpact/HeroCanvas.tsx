@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useParallax } from '@/utilities/useParallax'
+import { canUseMotionEffects } from '@/utilities/canUseMotionEffects'
 
 const HeroScene = dynamic(
   () => import('@/components/webgl/HeroScene').then((mod) => mod.HeroScene),
@@ -34,10 +35,7 @@ export const HeroCanvas: React.FC<{
   useParallax(containerRef, parallaxFactor)
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-    if (prefersReducedMotion || isCoarsePointer) return
-    setShouldRender(true)
+    if (canUseMotionEffects()) setShouldRender(true)
   }, [])
 
   useEffect(() => {

@@ -60,9 +60,14 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      // Explicit sizing for a single long-lived Docker process (was previously
+      // unset, relying on pg's bare default) — generous enough for 10-20
+      // concurrent users, with Neon's own pooler as a second layer underneath.
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
     },
-    // Prisma Postgres's connection layer doesn't support the raw catalog
-    // introspection query push-mode relies on — use migrations only instead.
+    // Migrations only, not push-to-sync — safer for production.
     push: false,
   }),
   collections: [Pages, Posts, Media, Categories, Users],

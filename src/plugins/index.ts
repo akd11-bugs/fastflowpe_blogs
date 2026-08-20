@@ -3,6 +3,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -86,6 +87,27 @@ export const plugins: Plugin[] = [
     searchOverrides: {
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
+      },
+    },
+  }),
+  // Object storage (Cloudflare R2, S3-API-compatible) for uploaded media —
+  // local disk storage doesn't survive a container restart/redeploy. Falls
+  // back to local storage (see src/collections/Media.ts's staticDir) when
+  // S3_BUCKET isn't set, so local dev keeps working without R2 credentials.
+  s3Storage({
+    enabled: Boolean(process.env.S3_BUCKET),
+    collections: {
+      media: {
+        disableLocalStorage: true,
+      },
+    },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION || 'auto',
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
       },
     },
   }),

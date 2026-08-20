@@ -6,6 +6,7 @@ node_modules
 .next
 next-env.d.ts
 .vercel
+.neon
 
 # Payload default media upload directory — committed for now so existing
 # uploads survive a Vercel deploy (local-disk storage doesn't persist there).

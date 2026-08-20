@@ -3,6 +3,8 @@
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 
+import { canUseMotionEffects } from '@/utilities/canUseMotionEffects'
+
 const HeroScene = dynamic(() => import('./HeroScene').then((mod) => mod.HeroScene), {
   ssr: false,
 })
@@ -23,9 +25,7 @@ export const HoverWiggle: React.FC<{
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-    setCapable(!prefersReducedMotion && !isCoarsePointer)
+    setCapable(canUseMotionEffects())
   }, [])
 
   if (!capable) return null

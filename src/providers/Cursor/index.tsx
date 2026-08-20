@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/utilities/ui'
+import { canUseMotionEffects } from '@/utilities/canUseMotionEffects'
 import React, { useEffect, useRef, useState } from 'react'
 
 const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, select'
@@ -27,10 +28,7 @@ export const CursorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-    if (prefersReducedMotion || isCoarsePointer) return
-    setEnabled(true)
+    if (canUseMotionEffects()) setEnabled(true)
   }, [])
 
   useEffect(() => {

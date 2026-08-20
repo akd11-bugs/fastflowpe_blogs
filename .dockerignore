@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+generated
+*.tsbuildinfo
+.vercel
+.claude
+.agents
+.windsurf
+test-results
+playwright-report
+blob-report
