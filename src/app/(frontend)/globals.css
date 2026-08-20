@@ -378,7 +378,11 @@ html.custom-cursor-active button {
   width: 16px;
   height: 16px;
   border-radius: 9999px;
-  background: var(--foreground);
+  /* Fixed (theme-independent) white, not var(--foreground) — mix-blend-mode:
+     difference only guarantees contrast against any background (including
+     the footer's always-dark panel) when the dot color itself is a stable
+     absolute value. A theme-linked color goes dark-on-dark in light mode. */
+  background: #ffffff;
   mix-blend-mode: difference;
   pointer-events: none;
   z-index: 9999;
