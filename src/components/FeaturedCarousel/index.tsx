@@ -39,20 +39,18 @@ export const FeaturedCarousel: React.FC = async () => {
   })
 
   return (
-    <div className="container mb-16">
-      <div className="grid grid-cols-1 lg:grid-cols-[18rem_minmax(0,1fr)] gap-10 items-start">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-semibold mb-4">Latest Articles</h1>
-          <p className="text-muted-foreground mb-6">
-            Fresh perspectives and stories, updated as we publish.
-          </p>
-          <Link href="/posts" className="underline underline-offset-4 font-medium">
-            Read more
-          </Link>
-        </div>
-
-        <FeaturedCarouselScroller posts={cardDocs} />
+    <div className="mb-16">
+      <div className="container mb-8 max-w-2xl">
+        <h1 className="text-3xl md:text-4xl font-semibold mb-4">Latest Articles</h1>
+        <p className="text-muted-foreground mb-6">
+          Fresh perspectives and stories, updated as we publish.
+        </p>
+        <Link href="/posts" className="underline underline-offset-4 font-medium">
+          Read more
+        </Link>
       </div>
+
+      <FeaturedCarouselScroller posts={cardDocs} />
     </div>
   )
 }

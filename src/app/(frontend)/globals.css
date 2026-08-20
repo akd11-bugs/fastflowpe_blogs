@@ -420,3 +420,23 @@ html.custom-cursor-active button {
     transition: none;
   }
 }
+
+/* Continuously-revolving posts carousel (src/components/FeaturedCarousel) —
+   the track renders the post list twice back-to-back and scrolls exactly
+   half its own width, so the loop point is visually seamless. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 45s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
