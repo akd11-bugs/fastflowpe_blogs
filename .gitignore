@@ -7,8 +7,11 @@ node_modules
 next-env.d.ts
 .vercel
 
-# Payload default media upload directory
-public/media/
+# Payload default media upload directory — committed for now so existing
+# uploads survive a Vercel deploy (local-disk storage doesn't persist there).
+# Uncomment once Media moves to a real cloud storage adapter (e.g.
+# @payloadcms/storage-vercel-blob).
+# public/media/
 
 public/robots.txt
 public/sitemap*.xml
