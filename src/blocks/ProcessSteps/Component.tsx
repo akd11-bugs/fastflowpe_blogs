@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import type { ProcessStepsBlock as ProcessStepsBlockProps } from '@/payload-types'
 
@@ -8,10 +8,11 @@ import { cn } from '@/utilities/ui'
 import { brandAccent } from '@/utilities/stringToColor'
 
 /**
- * Plain giant-text list — hovering a step title changes its color and
- * shows that step's description as plain text beside it, in the same row.
- * No floating/boxed preview panel, no image placeholder, no badge marks,
- * no transition animation — just an instant show/hide next to the title.
+ * Giant-text list with a hover-revealed floating preview card — matches
+ * metajive.com's "Featured Work" section (confirmed via extracted video
+ * frames): a plain vertical list in massive type, normal page scroll, and
+ * hovering a row surfaces an animated floating card beside it showing an
+ * image placeholder and the step's description together.
  */
 export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
   eyebrow,
@@ -21,6 +22,21 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
 }) => {
   const stepList = steps || []
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [previewTop, setPreviewTop] = useState(0)
+
+  const handleEnter = (index: number) => {
+    const row = rowRefs.current[index]
+    const list = listRef.current
+    if (!row || !list) return
+    const rowRect = row.getBoundingClientRect()
+    const listRect = list.getBoundingClientRect()
+    setPreviewTop(rowRect.top - listRect.top + rowRect.height / 2)
+    setHoveredIndex(index)
+  }
+
+  const hovered = hoveredIndex !== null ? stepList[hoveredIndex] : null
 
   return (
     <div className="container my-16">
@@ -34,35 +50,60 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
         {description && <p className="text-muted-foreground">{description}</p>}
       </div>
 
-      {/* lg-and-up: giant list, description appears beside the title on
-          hover. Same viewport-breakpoint split (not a pointer/coarse check)
-          already used by FeatureSlides for its sticky-vs-inline fallback. */}
-      <div className="hidden lg:block" onMouseLeave={() => setHoveredIndex(null)}>
+      {/* lg-and-up: giant list + hover preview. */}
+      <div ref={listRef} className="relative hidden lg:block" onMouseLeave={() => setHoveredIndex(null)}>
         {stepList.map((step, index) => (
           <div
             key={step.id || index}
-            onMouseEnter={() => setHoveredIndex(index)}
-            className="border-b-2 border-border py-8 flex items-center justify-between gap-10 cursor-default"
+            ref={(el) => {
+              rowRefs.current[index] = el
+            }}
+            onMouseEnter={() => handleEnter(index)}
+            className="border-b-2 border-border py-8 cursor-default"
           >
             <span
               className={cn(
-                'text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight shrink-0',
+                'block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight transition-colors',
                 hoveredIndex === index ? brandAccent.text : 'text-foreground',
               )}
             >
               {step.title}
             </span>
-            {hoveredIndex === index && (
-              <p className="text-muted-foreground text-lg max-w-md text-right">
-                {step.description}
-              </p>
-            )}
           </div>
         ))}
+
+        {/* Floating preview — repositions to the hovered row's vertical
+            center, fades/scales in. Image placeholder + description
+            together as one card, no badge/number marks. */}
+        <div
+          className={cn(
+            'pointer-events-none absolute right-0 w-80 -translate-y-1/2 transition-all duration-200 ease-out',
+            hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
+          )}
+          style={{ top: previewTop }}
+        >
+          {hovered && (
+            <div className="border-2 border-border rounded-2xl overflow-hidden bg-card shadow-2xl">
+              <div className={cn('relative w-full aspect-[4/3] overflow-hidden', brandAccent.bg)}>
+                <div
+                  className={cn(
+                    'absolute inset-0 flex items-center justify-center text-sm font-medium',
+                    brandAccent.text,
+                  )}
+                >
+                  Image placeholder
+                </div>
+              </div>
+              <div className="p-5">
+                <p className="text-muted-foreground text-sm">{hovered.description}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Mobile/touch: no hover available — show every step's title and
-          description stacked inline and always visible. */}
+      {/* Mobile/touch: no hover available — show every step's full content
+          inline and always visible. */}
       <div className="lg:hidden flex flex-col">
         {stepList.map((step, index) => (
           <div key={step.id || index} className="border-b-2 border-border py-8 flex flex-col gap-3">
