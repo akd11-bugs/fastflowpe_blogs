@@ -77,14 +77,21 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
             together as one card, no badge/number marks. */}
         <div
           className={cn(
-            'pointer-events-none absolute right-0 w-80 -translate-y-1/2 transition-all duration-200 ease-out',
+            'pointer-events-none absolute right-0 flex items-center gap-5 -translate-y-1/2 transition-all duration-200 ease-out',
             hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
           )}
           style={{ top: previewTop }}
         >
           {hovered && (
-            <div className="border-2 border-border rounded-2xl overflow-hidden bg-card shadow-2xl">
-              <div className={cn('relative w-full aspect-[4/3] overflow-hidden', brandAccent.bg)}>
+            <>
+              {/* The image itself is the only "box" — rounded corners, no
+                  extra card wrapper around it and the text together. */}
+              <div
+                className={cn(
+                  'relative w-56 aspect-[4/3] overflow-hidden rounded-2xl shrink-0',
+                  brandAccent.bg,
+                )}
+              >
                 <div
                   className={cn(
                     'absolute inset-0 flex items-center justify-center text-sm font-medium',
@@ -94,10 +101,11 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                   Image placeholder
                 </div>
               </div>
-              <div className="p-5">
-                <p className="text-muted-foreground text-sm">{hovered.description}</p>
-              </div>
-            </div>
+              {/* Plain text beside the image — no border/background of its own. */}
+              <p className="text-foreground text-base font-medium max-w-[14rem]">
+                {hovered.description}
+              </p>
+            </>
           )}
         </div>
       </div>
