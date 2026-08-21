@@ -86,3 +86,9 @@ function hashString(input: string): number {
 export function stringToColor(input: string) {
   return PALETTE[hashString(input) % PALETTE.length]
 }
+
+/** The palette's blue entry, matching FastFlowPe's brand blue (#028DD0) — for
+ * surfaces that should read as consistently on-brand rather than hashed
+ * per-item (e.g. ProcessSteps's hover-preview badge/image tint), as opposed
+ * to `stringToColor`'s varied per-string palette pick. */
+export const brandAccent = PALETTE[0]
