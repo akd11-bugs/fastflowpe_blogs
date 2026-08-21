@@ -61,8 +61,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                   {(isActive) => (
                     <article
                       className={cn(
-                        'group relative flex flex-col border-2 rounded-2xl overflow-hidden shadow-lg transition-all duration-300',
-                        accent.vibrantBg,
+                        'group relative flex flex-col border-2 rounded-2xl overflow-hidden bg-card shadow-lg transition-all duration-300',
                         isActive
                           ? cn('scale-105 shadow-2xl', accent.accentBorder.replace('hover:', ''))
                           : 'border-border',
@@ -80,13 +79,8 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                       />
 
                       {/* Image placeholder — real illustrations/icons TBD */}
-                      <div className={cn('relative w-full aspect-[21/9] overflow-hidden', accent.bg)}>
-                        <div
-                          className={cn(
-                            'absolute inset-0 flex items-center justify-center text-sm font-medium',
-                            accent.text,
-                          )}
-                        >
+                      <div className="relative w-full aspect-[21/9] overflow-hidden bg-muted">
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted to-secondary text-muted-foreground text-sm">
                           Image placeholder
                         </div>
                       </div>
@@ -101,10 +95,8 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                         >
                           [{String(index + 1).padStart(2, '0')}]
                         </span>
-                        <h3 className={cn('text-2xl font-bold tracking-tight', accent.vibrantText)}>
-                          {step.title}
-                        </h3>
-                        <p className={cn(accent.vibrantText, 'opacity-80')}>{step.description}</p>
+                        <h3 className="text-2xl font-bold tracking-tight">{step.title}</h3>
+                        <p className="text-muted-foreground">{step.description}</p>
                       </div>
                     </article>
                   )}
