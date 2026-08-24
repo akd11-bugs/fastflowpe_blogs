@@ -93,7 +93,9 @@ export default async function Post({ params: paramsPromise }: Args) {
           rest of the article content below. */}
       <PostHero post={post} readingTime={readingTime} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
+      {/* gap-4 removed: this flex container has exactly one child (the
+          `.container` div below), so it was always a no-op. */}
+      <div className="flex flex-col items-center pt-8">
         <div className="container">
           {headings.length > 1 && (
             <div className="mx-auto mb-10 max-w-[48rem]">

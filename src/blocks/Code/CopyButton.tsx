@@ -18,14 +18,14 @@ export function CopyButton({ code }: { code: string }) {
   return (
     <div className="flex justify-end align-middle">
       <Button
-        className="flex gap-1"
+        className="flex"
         variant={'secondary'}
         onClick={async () => {
           await navigator.clipboard.writeText(code)
           updateCopyStatus()
         }}
       >
-        <p>{text}</p>
+        <p className="mr-1">{text}</p>
         <CopyIcon />
       </Button>
     </div>

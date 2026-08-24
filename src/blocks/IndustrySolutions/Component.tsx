@@ -46,7 +46,8 @@ export const IndustrySolutionsBlock: React.FC<IndustrySolutionsBlockProps> = ({
             <article
               key={item.id || index}
               className={cn(
-                'group relative flex flex-col gap-3 border-2 border-border rounded-2xl overflow-hidden bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
+                // Margin, not flex `gap` — see the note in Footer/Component.tsx.
+                'group relative flex flex-col border-2 border-border rounded-2xl overflow-hidden bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
                 accent.accentBorder,
               )}
             >
@@ -58,14 +59,14 @@ export const IndustrySolutionsBlock: React.FC<IndustrySolutionsBlockProps> = ({
               />
               <span
                 className={cn(
-                  'inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
+                  'mb-3 inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
                   accent.solidBg,
                   accent.solidText,
                 )}
               >
                 {item.title}
               </span>
-              <h3 className="text-xl font-bold tracking-tight">{item.headline}</h3>
+              <h3 className="mb-3 text-xl font-bold tracking-tight">{item.headline}</h3>
               <p className="text-muted-foreground">{item.description}</p>
             </article>
           )

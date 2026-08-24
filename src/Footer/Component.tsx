@@ -25,8 +25,12 @@ export async function Footer() {
       </div>
 
       <div className="relative container pt-40 pb-10">
-        <div className="rounded-3xl border-2 border-white/10 bg-white/[0.03] p-8 md:p-12 flex flex-col gap-12 md:flex-row md:justify-between">
-          <div className="md:max-w-xs">
+        {/* Margins instead of flexbox `gap` throughout this file — some
+            preview browsers (e.g. VS Code's built-in Simple Browser) don't
+            support `gap` on flex containers and silently drop it, fusing
+            everything together with zero space. Margins work everywhere. */}
+        <div className="rounded-3xl border-2 border-white/10 bg-white/[0.03] p-8 md:p-12 flex flex-col md:flex-row md:justify-between">
+          <div className="md:max-w-xs mb-12 md:mb-0">
             <Link className="flex items-center mb-8" href="/">
               <Logo />
             </Link>
@@ -38,15 +42,19 @@ export async function Footer() {
           </div>
 
           {columns.length > 0 && (
-            <div className="flex flex-wrap gap-12">
+            <div className="flex flex-wrap">
               {columns.map((column, i) => (
-                <div key={column.id || i}>
+                <div key={column.id || i} className="mr-12 mb-8">
                   <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
                     {column.title}
                   </p>
-                  <nav className="flex flex-col gap-3">
+                  <nav className="flex flex-col">
                     {(column.navItems || []).map(({ link }, j) => (
-                      <CMSLink className="text-white/70 hover:text-white" key={j} {...link} />
+                      <CMSLink
+                        className="text-white/70 hover:text-white mb-3 last:mb-0"
+                        key={j}
+                        {...link}
+                      />
                     ))}
                   </nav>
                 </div>
@@ -55,15 +63,17 @@ export async function Footer() {
           )}
         </div>
 
-        <div className="border-t border-white/10 mt-8 pt-6 flex flex-col-reverse gap-4 md:flex-row md:items-center md:justify-between text-sm text-white/50">
-          <p>
-            &copy; {year} FastFlowPe. All rights reserved.
-          </p>
-          <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
+        <div className="border-t border-white/10 mt-8 pt-6 flex flex-col-reverse md:flex-row md:items-center md:justify-between text-sm text-white/50">
+          <p className="mt-4 md:mt-0">&copy; {year} FastFlowPe. All rights reserved.</p>
+          <div className="flex items-start md:items-center">
             {legalLinks.length > 0 && (
-              <nav className="flex gap-6">
+              <nav className="flex">
                 {legalLinks.map(({ link }, i) => (
-                  <CMSLink className="text-white/50 hover:text-white" key={i} {...link} />
+                  <CMSLink
+                    className="text-white/50 hover:text-white mr-6 last:mr-0"
+                    key={i}
+                    {...link}
+                  />
                 ))}
               </nav>
             )}

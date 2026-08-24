@@ -46,7 +46,8 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
           className="process-panel flex flex-col justify-center px-6 py-16 md:px-12 md:py-20 lg:px-16"
           aria-label={`Step ${index + 1}: ${step.title}`}
         >
-          <div className="mx-auto flex w-full max-w-[90rem] flex-col gap-8">
+          {/* space-y, not flex `gap` — see the note in Footer/Component.tsx. */}
+          <div className="mx-auto flex w-full max-w-[90rem] flex-col space-y-8">
             <p className="font-mono text-xs uppercase tracking-[0.25em] panel-dim">
               {String(index + 1).padStart(2, '0')} / {String(stepList.length).padStart(2, '0')}
             </p>
@@ -65,7 +66,7 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                 narrow. No placeholder box when a step has no image — an empty
                 dashed rectangle read as an unfinished page, not a deliberate
                 gap, so the description just takes the full row instead. */}
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+            <div className="flex flex-col space-y-8 lg:flex-row lg:items-center lg:space-y-0 lg:space-x-12">
               {step.image && typeof step.image === 'object' && (
                 <div className="w-full lg:w-1/2">
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">

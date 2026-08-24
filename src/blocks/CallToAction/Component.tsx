@@ -14,15 +14,23 @@ export const CallToActionBlock: React.FC<CTABlockProps> = ({ links, richText }) 
   return (
     <div className="container">
       <div
-        className="rounded-2xl border-2 border-transparent p-6 md:p-8 flex flex-col gap-8 md:flex-row md:justify-between md:items-center text-white [&_*]:text-white"
+        className="rounded-2xl border-2 border-transparent p-6 md:p-8 flex flex-col md:flex-row md:justify-between md:items-center text-white [&_*]:text-white"
         style={{ backgroundColor: FASTFLOWPE_BLUE }}
       >
-        <div className="max-w-[48rem] flex items-center">
+        {/* Margin, not flex `gap` — see the note in Footer/Component.tsx. */}
+        <div className="max-w-[48rem] flex items-center mb-8 md:mb-0">
           {richText && <RichText className="mb-0" data={richText} enableGutter={false} />}
         </div>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col">
           {(links || []).map(({ link }, i) => {
-            return <CMSLink key={i} size="lg" className="!bg-white !text-primary" {...link} />
+            return (
+              <CMSLink
+                key={i}
+                size="lg"
+                className="!bg-white !text-primary mb-8 last:mb-0"
+                {...link}
+              />
+            )
           })}
         </div>
       </div>

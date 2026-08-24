@@ -100,9 +100,10 @@ export const Card: React.FC<{
           />
         )}
       </div>
-      <div className={cn('flex flex-col gap-3 flex-1', featured ? 'p-6 md:p-8' : 'p-5')}>
+      {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx. */}
+      <div className={cn('flex flex-col space-y-3 flex-1', featured ? 'p-6 md:p-8' : 'p-5')}>
         {hasCategories && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap">
             {validCategories.map((category, index) => {
               const categoryTitle = category.title || 'Untitled category'
               const color = stringToColor(categoryTitle)
@@ -112,12 +113,12 @@ export const Card: React.FC<{
                 <span
                   key={index}
                   className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
+                    'mr-2 mb-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
                     color.solidBg,
                     color.solidText,
                   )}
                 >
-                  <Icon className="h-3 w-3" />
+                  <Icon className="h-3 w-3 mr-1.5" />
                   {categoryTitle}
                 </span>
               )
@@ -149,7 +150,7 @@ export const Card: React.FC<{
           </p>
         )}
 
-        <div className="flex items-center gap-2 pt-2 mt-auto border-t border-border text-xs text-muted-foreground">
+        <div className="flex items-center space-x-2 pt-2 mt-auto border-t border-border text-xs text-muted-foreground">
           {authorName && (
             <div
               className={cn(

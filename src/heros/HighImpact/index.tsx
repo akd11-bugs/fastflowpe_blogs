@@ -90,12 +90,12 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
           </div>
         )}
         {Array.isArray(links) && links.length > 0 && (
-          <ul className="flex md:justify-center gap-4">
+          <ul className="flex md:justify-center">
             {links.map(({ link }, i) => {
               return (
                 <li
                   key={i}
-                  className={cn('stagger-item', revealed && 'stagger-visible')}
+                  className={cn('mr-4 last:mr-0', 'stagger-item', revealed && 'stagger-visible')}
                   style={{ '--stagger-index': i + 1 } as React.CSSProperties}
                 >
                   <CMSLink {...link} />

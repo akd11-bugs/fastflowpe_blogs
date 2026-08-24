@@ -85,10 +85,11 @@ export const FeatureSlidesBlock: React.FC<FeatureSlidesBlockProps> = ({
                 onMouseEnter={() => setActiveIndex(index)}
                 className="border-b-2 border-border py-8 md:py-10 lg:py-12"
               >
-                <div className="hidden lg:flex items-center justify-between gap-6 cursor-default">
+                {/* Margin, not flex `gap` — see the note in Footer/Component.tsx. */}
+                <div className="hidden lg:flex items-center justify-between cursor-default">
                   <span
                     className={cn(
-                      'text-2xl md:text-3xl font-bold tracking-tight transition-colors',
+                      'mr-6 text-2xl md:text-3xl font-bold tracking-tight transition-colors',
                       isActive ? 'underline underline-offset-4' : 'text-muted-foreground',
                     )}
                     style={isActive ? { color: FASTFLOWPE_BLUE } : undefined}

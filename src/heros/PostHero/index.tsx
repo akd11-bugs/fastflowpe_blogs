@@ -27,9 +27,10 @@ export const PostHero: React.FC<{
 
   return (
     <div className="container">
-      <div className="mx-auto flex max-w-[48rem] flex-col gap-6">
+      {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx. */}
+      <div className="mx-auto flex max-w-[48rem] flex-col space-y-6">
         <div
-          className="flex flex-wrap gap-2 reveal-up"
+          className="flex flex-wrap reveal-up"
           style={{ '--stagger-index': 0 } as React.CSSProperties}
         >
           {categories?.map((category, index) => {
@@ -42,7 +43,7 @@ export const PostHero: React.FC<{
               <span
                 key={index}
                 className={cn(
-                  'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
+                  'mr-2 mb-2 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                   color.bg,
                   color.text,
                 )}
@@ -63,7 +64,7 @@ export const PostHero: React.FC<{
         </h1>
 
         <div
-          className="flex flex-col gap-3 text-sm text-muted-foreground reveal-up md:flex-row md:items-center md:gap-6"
+          className="flex flex-col space-y-3 text-sm text-muted-foreground reveal-up md:flex-row md:items-center md:space-y-0 md:space-x-6"
           style={{ '--stagger-index': 2 } as React.CSSProperties}
         >
           {hasAuthors && <span className="font-medium text-foreground">{formatAuthors(populatedAuthors)}</span>}

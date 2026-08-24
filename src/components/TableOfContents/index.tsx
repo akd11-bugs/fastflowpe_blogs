@@ -16,7 +16,8 @@ export const TableOfContents: React.FC<{ headings: HeadingEntry[] }> = ({ headin
       <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
         On this page
       </p>
-      <ol className="flex flex-col gap-2.5">
+      {/* space-y, not flex `gap` — see the note in Footer/Component.tsx. */}
+      <ol className="flex flex-col space-y-2.5">
         {headings.map((heading) => (
           <li key={heading.id} className={heading.level === 3 ? 'ml-5' : undefined}>
             <a

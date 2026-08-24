@@ -54,9 +54,10 @@ export const PostShareTags: React.FC<{
   ]
 
   return (
-    <div className="flex flex-col gap-6 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
+    // Margin/space-x, not flex `gap` — see the note in Footer/Component.tsx.
+    <div className="flex flex-col border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
       {categories.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap mb-6 md:mb-0">
           {/* Plain tags, not filter links — there's no per-category listing
               page anymore for them to point at (the blog IS the homepage, and
               its Archive block shows a fixed admin-picked set, not a
@@ -67,7 +68,7 @@ export const PostShareTags: React.FC<{
               <span
                 key={category.id}
                 className={cn(
-                  'inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide transition-opacity hover:opacity-80',
+                  'mr-2 mb-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide transition-opacity hover:opacity-80',
                   color.solidBg,
                   color.solidText,
                 )}
@@ -79,7 +80,7 @@ export const PostShareTags: React.FC<{
         </div>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center space-x-2">
         {shareLinks.map(({ label, href, Icon }) => (
           <a
             key={label}
@@ -95,7 +96,7 @@ export const PostShareTags: React.FC<{
         <button
           type="button"
           onClick={handleCopy}
-          className="flex h-9 items-center gap-1.5 rounded-full border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          className="flex h-9 items-center space-x-1.5 rounded-full border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
         >
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? 'Copied' : 'Copy link'}

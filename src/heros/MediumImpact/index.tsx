@@ -13,10 +13,10 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
         {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
 
         {Array.isArray(links) && links.length > 0 && (
-          <ul className="flex gap-4">
+          <ul className="flex">
             {links.map(({ link }, i) => {
               return (
-                <li key={i}>
+                <li className="mr-4 last:mr-0" key={i}>
                   <CMSLink {...link} />
                 </li>
               )

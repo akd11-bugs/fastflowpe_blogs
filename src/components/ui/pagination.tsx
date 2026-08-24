@@ -18,7 +18,9 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
 const PaginationContent: React.FC<
   { ref?: React.Ref<HTMLUListElement> } & React.HTMLAttributes<HTMLUListElement>
 > = ({ className, ref, ...props }) => (
-  <ul className={cn('flex flex-row items-center gap-1', className)} ref={ref} {...props} />
+  // `[&>*+*]:ml-1` instead of flex `gap-1` — generic primitive, arbitrary
+  // PaginationItem children.
+  <ul className={cn('flex flex-row items-center [&>*+*]:ml-1', className)} ref={ref} {...props} />
 )
 
 const PaginationItem: React.FC<
@@ -50,7 +52,7 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    className={cn('gap-1 pl-2.5', className)}
+    className={cn('[&>*+*]:ml-1 pl-2.5', className)}
     size="default"
     {...props}
   >
@@ -62,7 +64,7 @@ const PaginationPrevious = ({
 const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    className={cn('gap-1 pr-2.5', className)}
+    className={cn('[&>*+*]:ml-1 pr-2.5', className)}
     size="default"
     {...props}
   >

@@ -34,8 +34,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       className="fixed top-3 md:top-4 inset-x-0 z-50 flex justify-center px-4"
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <div className="w-fit flex items-center gap-8 rounded-full border border-white/40 bg-white/60 px-6 py-3 shadow-lg shadow-black/5 backdrop-blur-xl backdrop-saturate-150 dark:border-white/10 dark:bg-black/30">
-        <Link href="/" className="flex items-center shrink-0">
+      <div className="w-fit flex items-center rounded-full border border-white/40 bg-white/60 px-6 py-3 shadow-lg shadow-black/5 backdrop-blur-xl backdrop-saturate-150 dark:border-white/10 dark:bg-black/30">
+        {/* Margin, not flex `gap` — see the note in Footer/Component.tsx. */}
+        <Link href="/" className="flex items-center shrink-0 mr-8">
           <Logo loading="eager" priority="high" className="block h-7 w-auto" />
         </Link>
         <HeaderNav data={data} />

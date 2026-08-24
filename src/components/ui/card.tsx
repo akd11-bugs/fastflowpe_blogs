@@ -15,7 +15,9 @@ const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className,
   return (
     <div
       data-slot="card-header"
-      className={cn('flex flex-col gap-1.5 p-6', className)}
+      // `[&>*+*]:mt-1.5` instead of flex `gap-1.5` — generic primitive,
+      // arbitrary children (usually CardTitle + CardDescription).
+      className={cn('flex flex-col [&>*+*]:mt-1.5 p-6', className)}
       {...props}
     />
   )
