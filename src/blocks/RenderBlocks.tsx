@@ -7,6 +7,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FeatureSlidesBlock } from '@/blocks/FeatureSlides/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { IndustrySolutionsBlock } from '@/blocks/IndustrySolutions/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProcessStepsBlock } from '@/blocks/ProcessSteps/Component'
 import { ScrollReveal } from '@/components/ScrollReveal'
@@ -17,6 +18,7 @@ const blockComponents = {
   cta: CallToActionBlock,
   featureSlides: FeatureSlidesBlock,
   formBlock: FormBlock,
+  industrySolutions: IndustrySolutionsBlock,
   mediaBlock: MediaBlock,
   processSteps: ProcessStepsBlock,
 }

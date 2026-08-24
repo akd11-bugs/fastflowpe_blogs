@@ -202,7 +202,14 @@ export interface Page {
     media?: (number | null) | Media;
   };
   layout: (
-    CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | ProcessStepsBlock | FeatureSlidesBlock
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | ProcessStepsBlock
+    | FeatureSlidesBlock
+    | IndustrySolutionsBlock
   )[];
   meta?: {
     title?: string | null;
@@ -876,6 +883,33 @@ export interface FeatureSlidesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IndustrySolutionsBlock".
+ */
+export interface IndustrySolutionsBlock {
+  eyebrow?: string | null;
+  heading: string;
+  description?: string | null;
+  items: {
+    title: string;
+    headline: string;
+    description: string;
+    id?: string | null;
+  }[];
+  /**
+   * Manually place this block within the 12-column page grid. Leave defaults for normal full-width stacking.
+   */
+  gridPosition?: {
+    colStart?: number | null;
+    colSpan?: number | null;
+    rowStart?: number | null;
+    rowSpan?: number | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'industrySolutions';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1184,6 +1218,7 @@ export interface PagesSelect<T extends boolean = true> {
         formBlock?: T | FormBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         featureSlides?: T | FeatureSlidesBlockSelect<T>;
+        industrySolutions?: T | IndustrySolutionsBlockSelect<T>;
       };
   meta?:
     | T
@@ -1361,6 +1396,33 @@ export interface FeatureSlidesBlockSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        description?: T;
+        id?: T;
+      };
+  gridPosition?:
+    | T
+    | {
+        colStart?: T;
+        colSpan?: T;
+        rowStart?: T;
+        rowSpan?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IndustrySolutionsBlock_select".
+ */
+export interface IndustrySolutionsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        title?: T;
+        headline?: T;
         description?: T;
         id?: T;
       };

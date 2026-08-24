@@ -7,6 +7,7 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { FeatureSlides } from '../../blocks/FeatureSlides/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { IndustrySolutions } from '../../blocks/IndustrySolutions/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { ProcessSteps } from '../../blocks/ProcessSteps/config'
 import { hero } from '@/heros/config'
@@ -92,6 +93,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 FormBlock,
                 ProcessSteps,
                 FeatureSlides,
+                IndustrySolutions,
               ],
               required: true,
               admin: {

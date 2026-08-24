@@ -10,6 +10,7 @@ import type { ProcessStepsBlock as ProcessStepsBlockProps } from '@/payload-type
 import { Media } from '@/components/Media'
 import { canUseMotionEffects } from '@/utilities/canUseMotionEffects'
 import { useScrollTriggerLenis } from '@/utilities/useScrollTriggerLenis'
+import { cn } from '@/utilities/ui'
 
 /**
  * Full-bleed stacking process section.
@@ -180,10 +181,14 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
             <hr className="panel-rule border-t" />
 
             {/* Image beside the description on wide screens, below it on
-                narrow — the responsive answer to "under or beside". */}
+                narrow — the responsive answer to "under or beside". No
+                placeholder box when a step has no image: an empty dashed
+                rectangle at this scale reads as an unfinished page, not as a
+                deliberate gap, so the description just takes the full row
+                instead. */}
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-              <div className="w-full lg:w-1/2">
-                {step.image && typeof step.image === 'object' ? (
+              {step.image && typeof step.image === 'object' && (
+                <div className="w-full lg:w-1/2">
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
                     <Media
                       fill
@@ -192,16 +197,15 @@ export const ProcessStepsBlock: React.FC<ProcessStepsBlockProps> = ({
                       resource={step.image}
                     />
                   </div>
-                ) : (
-                  <div className="panel-placeholder flex aspect-[16/10] w-full items-center justify-center rounded-2xl border border-dashed">
-                    <span className="font-mono text-xs uppercase tracking-[0.2em] panel-dim">
-                      Image placeholder
-                    </span>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              <p className="w-full text-[clamp(1.05rem,1.8vw,1.6rem)] leading-relaxed lg:w-1/2">
+              <p
+                className={cn(
+                  'text-[clamp(1.05rem,1.8vw,1.6rem)] leading-relaxed',
+                  step.image && typeof step.image === 'object' ? 'w-full lg:w-1/2' : 'w-full max-w-3xl',
+                )}
+              >
                 {step.description}
               </p>
             </div>
