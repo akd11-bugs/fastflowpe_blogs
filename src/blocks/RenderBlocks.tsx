@@ -23,20 +23,6 @@ const blockComponents = {
   processSteps: ProcessStepsBlock,
 }
 
-/**
- * Blocks that run their own scroll choreography and must NOT be wrapped in
- * ScrollReveal.
- *
- * `.scroll-reveal` holds `transform: translateY(40px)` until it comes into
- * view. GSAP pins an element by switching it to `position: fixed`, which
- * resolves against the nearest transformed ancestor rather than the viewport —
- * so a pinned panel inside a reveal wrapper pins to the wrapper and drifts.
- * (globals.css carries the same warning for `position: sticky` children.)
- * Fading a section up 40px on entry is also pointless when the section's own
- * job is to pin and stack.
- */
-const SELF_CHOREOGRAPHED_BLOCKS = new Set<string>(['processSteps'])
-
 type GridPosition = {
   colStart?: number | null
   colSpan?: number | null
@@ -65,16 +51,10 @@ export const RenderBlocks: React.FC<{
                 (block as { gridPosition?: GridPosition }).gridPosition || {}
 
               const hasCustomRow = (rowStart && rowStart > 1) || (rowSpan && rowSpan > 1)
-              const selfChoreographed = SELF_CHOREOGRAPHED_BLOCKS.has(blockType)
-
-              const rendered = (
-                /* @ts-expect-error there may be some mismatch between the expected types here */
-                <Block {...block} disableInnerContainer />
-              )
 
               return (
                 <div
-                  className={selfChoreographed ? undefined : 'my-16'}
+                  className="my-16"
                   key={index}
                   style={{
                     gridColumn: `${colStart || 1} / span ${colSpan || 12}`,
@@ -83,7 +63,10 @@ export const RenderBlocks: React.FC<{
                       : {}),
                   }}
                 >
-                  {selfChoreographed ? rendered : <ScrollReveal>{rendered}</ScrollReveal>}
+                  <ScrollReveal>
+                    {/* @ts-expect-error there may be some mismatch between the expected types here */}
+                    <Block {...block} disableInnerContainer />
+                  </ScrollReveal>
                 </div>
               )
             }

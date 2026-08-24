@@ -25,9 +25,14 @@ export const Card: React.FC<{
   relationTo?: 'posts'
   showCategories?: boolean
   title?: string
+  /** 'featured' gives a bigger image, headline, and excerpt — for a bento
+   *  grid's lead tile, which otherwise gets a stretched default card with a
+   *  fixed-aspect image and a lot of dead space below a two-line excerpt. */
+  size?: 'default' | 'featured'
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const { className, doc, relationTo, showCategories, title: titleFromProps, size = 'default' } = props
+  const featured = size === 'featured'
 
   const {
     slug,
@@ -76,17 +81,26 @@ export const Card: React.FC<{
         )}
       />
 
-      <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
+      <div
+        className={cn(
+          'relative w-full overflow-hidden bg-muted',
+          featured ? 'aspect-[16/9]' : 'aspect-[16/10]',
+        )}
+      >
         {!imageToUse && (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted to-secondary text-muted-foreground text-sm">
             No image
           </div>
         )}
         {imageToUse && typeof imageToUse !== 'string' && (
-          <Media resource={imageToUse} size="33vw" imgClassName="object-cover w-full h-full" />
+          <Media
+            resource={imageToUse}
+            size={featured ? '66vw' : '33vw'}
+            imgClassName="object-cover w-full h-full"
+          />
         )}
       </div>
-      <div className="p-5 flex flex-col gap-3 flex-1">
+      <div className={cn('flex flex-col gap-3 flex-1', featured ? 'p-6 md:p-8' : 'p-5')}>
         {hasCategories && (
           <div className="flex flex-wrap gap-2">
             {validCategories.map((category, index) => {
@@ -112,7 +126,12 @@ export const Card: React.FC<{
         )}
 
         {titleToUse && (
-          <h3 className="text-xl font-bold leading-snug line-clamp-2 tracking-tight">
+          <h3
+            className={cn(
+              'font-bold leading-snug line-clamp-2 tracking-tight',
+              featured ? 'text-2xl md:text-3xl' : 'text-xl',
+            )}
+          >
             <Link className="not-prose text-foreground transition-colors" href={href} ref={link.ref}>
               {titleToUse}
             </Link>
@@ -120,7 +139,14 @@ export const Card: React.FC<{
         )}
 
         {description && (
-          <p className="text-sm text-muted-foreground line-clamp-2">{sanitizedDescription}</p>
+          <p
+            className={cn(
+              'text-muted-foreground',
+              featured ? 'text-base line-clamp-3' : 'text-sm line-clamp-2',
+            )}
+          >
+            {sanitizedDescription}
+          </p>
         )}
 
         <div className="flex items-center gap-2 pt-2 mt-auto border-t border-border text-xs text-muted-foreground">
