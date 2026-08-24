@@ -37,6 +37,19 @@ export const ProcessSteps: Block = {
           type: 'textarea',
           required: true,
         },
+        {
+          // Deliberately optional: existing rows have no image, and each panel
+          // renders a placeholder in its place, so the section never breaks
+          // while the images are still being produced.
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Panel image',
+          admin: {
+            description:
+              'Shown beside the description on large screens, below it on small. Leave empty for a placeholder.',
+          },
+        },
       ],
     },
     gridPosition(),

@@ -16,6 +16,12 @@ import { useEffect } from 'react'
  */
 export function useParallax(ref: React.RefObject<HTMLElement | null>, factor = 0.15) {
   useEffect(() => {
+    // A factor of 0 means "an ancestor already owns this element's transform"
+    // — used where a scroll-scrubbed parent (see ui/parallax-scrolling) drives
+    // the motion instead. Returning early leaves `transform` untouched rather
+    // than writing an identity value that would fight the parent's.
+    if (factor === 0) return
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
 

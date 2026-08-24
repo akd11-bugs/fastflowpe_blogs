@@ -440,3 +440,341 @@ html.custom-cursor-active button {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   Shader button
+   ==========================================================================
+
+   Stacked radial-gradient layers rotating at mismatched periods under
+   `mix-blend-mode`, which is what produces the shifting iridescent surface.
+
+   Lives here rather than in a `<style>` tag inside the component, for three
+   reasons the inline version got wrong:
+
+   1. A `<style>` in the component body is emitted once PER INSTANCE — two
+      buttons on a page meant two identical copies of this whole block.
+   2. Injected mid-document, it beat Tailwind's utilities, so `className`
+      overrides on font-size, padding or radius silently did nothing. Inside
+      `@layer components` the utility layer wins, as callers expect.
+   3. Reduced-motion and out-of-view rules can be expressed once, here,
+      instead of being unreachable from inside a style attribute.
+
+   The root needs `filter` (or any other stacking-context trigger) for the
+   children's blend modes to composite against the button rather than the page
+   behind it. */
+@layer components {
+  .shader-btn {
+    --rad: 32px;
+    --shader-border: #ffffff;
+    --shader-bg: #ff0000;
+    --shader-text: #000000;
+    --shader-text-shadow: #ffffff;
+    --shader-inset: #555588;
+    --shader-a: #ffffff;
+    --shader-b: #0000ff;
+    --shader-overlay-text: #000000;
+    --shader-overlay-glow: #ffffff;
+    --shader-overlay-shadow: rgb(0 0 0 / 26.7%);
+    --shader-overlay-highlight: rgb(255 255 255 / 33.3%);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: clip;
+    overflow-clip-margin: 4px;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    border: 2px solid var(--shader-border);
+    border-radius: var(--rad);
+    font-family: inherit;
+    font-size: 1.5rem;
+    font-weight: 600;
+    filter: saturate(0.65) brightness(1.8);
+    user-select: none;
+    outline: none;
+    transition: transform 0.15s ease;
+  }
+
+  /* Brand-toned alternative: the stock palette is saturated red/blue, which
+     reads as a demo rather than as FastFlowPe. Same construction, brand hue. */
+  .shader-btn--brand {
+    --shader-border: #eaf6fd;
+    --shader-bg: #028dd0;
+    --shader-a: #f2fbff;
+    --shader-b: #013f5e;
+    --shader-inset: #0a4a6b;
+    --shader-text: #00212f;
+    --shader-overlay-text: #00212f;
+    filter: saturate(0.85) brightness(1.35);
+  }
+
+  .shader-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* The stock snippet used a bare white glow, which is invisible on a light
+     ground. Ring tokens match the rest of the buttons in this codebase. */
+  .shader-btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  .shader-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .shader-btn .shader-layer {
+    position: absolute;
+    pointer-events: none;
+    left: -160px;
+    width: 500%;
+    aspect-ratio: 1;
+    background: radial-gradient(
+      ellipse at 65% 180%,
+      var(--shader-a),
+      var(--shader-b),
+      var(--shader-a),
+      var(--shader-b),
+      var(--shader-a),
+      var(--shader-b),
+      var(--shader-a),
+      var(--shader-b),
+      var(--shader-a),
+      var(--shader-b),
+      var(--shader-a)
+    );
+    mix-blend-mode: difference;
+    animation: shader-rotate 8s linear infinite;
+  }
+
+  /* The topmost layer dodges instead of differencing — that single swap is
+     what stops the stack reading as flat noise and gives it a highlight.
+     Targeted by data attribute, not :nth-child(8), which silently broke if
+     any child was added or reordered. */
+  .shader-btn .shader-layer[data-shader-top='true'] {
+    mix-blend-mode: color-dodge;
+  }
+
+  .shader-btn .shader-face {
+    position: relative;
+    z-index: 0;
+    padding: 12px 36px;
+    border: none;
+    border-radius: var(--rad);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: 0.15rem;
+    color: var(--shader-text);
+    background-color: var(--shader-bg);
+    box-shadow: inset 0 0 10px 9px var(--shader-inset);
+    text-shadow: 0 1px 3px var(--shader-text-shadow);
+    mix-blend-mode: color-dodge;
+    pointer-events: none;
+  }
+
+  .shader-btn .shader-overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    padding: 12px 36px;
+    border-radius: var(--rad);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: 0.15rem;
+    color: var(--shader-overlay-text);
+    text-shadow: 0 0 4px var(--shader-overlay-glow);
+    box-shadow:
+      inset 0 -4px 4px 0 var(--shader-overlay-shadow),
+      inset 0 4px 4px 0 var(--shader-overlay-highlight);
+    mix-blend-mode: multiply;
+    transition: transform 0.2s ease;
+    animation: shader-pulse-opacity 5s ease infinite;
+  }
+
+  .shader-btn:hover .shader-overlay {
+    transform: scale(1.06);
+  }
+
+  .shader-btn .shader-lightbar {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 50px;
+    width: 80%;
+    height: 1.9rem;
+    aspect-ratio: 1;
+    background-color: rgb(255 255 255 / 33.3%);
+    filter: blur(5px);
+    animation: shader-pulse-light 3s ease-in-out infinite;
+  }
+
+  /* Seven rotating layers under blend modes repaint continuously and never
+     stop on their own. Pausing while scrolled away keeps an off-screen button
+     from taxing the compositor for the whole session. */
+  .shader-btn[data-shader-active='false'] .shader-layer,
+  .shader-btn[data-shader-active='false'] .shader-overlay,
+  .shader-btn[data-shader-active='false'] .shader-lightbar {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes shader-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shader-pulse-light {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes shader-pulse-opacity {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Three infinite animations, none of which the original guarded. The button
+   keeps its full composed appearance — only the motion stops. */
+@media (prefers-reduced-motion: reduce) {
+  .shader-btn .shader-layer,
+  .shader-btn .shader-overlay,
+  .shader-btn .shader-lightbar {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Process panels — full-bleed stacking section
+   ==========================================================================
+
+   Each panel pins at the top of the viewport while the next scrolls over it
+   (GSAP ScrollTrigger, in blocks/ProcessSteps/Component.tsx). Two properties
+   here are load-bearing rather than cosmetic:
+
+   - Panels MUST be opaque. A stacked panel's whole job is to hide the one
+     beneath it; any transparency and both render at once.
+   - The stack sits at `z-index: 0`, below the site header's `z-50`
+     (Header/Component.client.tsx), so the floating nav pill stays visible and
+     clickable over a pinned panel.
+
+   Tones are addressed by `data-panel-tone` rather than :nth-child so that
+   adding a heading band or a closing element can't silently re-colour every
+   panel. They cycle, so any number of CMS steps works.
+
+   Dark mode does not simply invert: the light set's off-white panel becomes a
+   slate tone, because a full-viewport near-white panel mid-scroll is a flash
+   in an otherwise dark page. */
+@layer components {
+  .process-stack {
+    position: relative;
+    z-index: 0;
+  }
+
+  .process-panel {
+    background-color: var(--panel-bg);
+    color: var(--panel-fg);
+  }
+
+  /* Hairline rules and secondary copy derive from the panel's own foreground,
+     so a new tone never needs a matching set of border/muted colours. */
+  .process-panel .panel-rule {
+    border-color: color-mix(in oklab, var(--panel-fg) 40%, var(--panel-bg));
+  }
+
+  /* Mixed toward the panel BACKGROUND, not toward `transparent`. An alpha
+     colour composites to the same thing visually but reports its pre-blend
+     value to getComputedStyle, so a contrast audit silently measures the
+     undimmed colour and passes when the rendered text does not. Opaque mixing
+     keeps the measured value honest.
+
+     The dimming is expressed as per-tone SELECTORS rather than a
+     `color-mix(... var(--x) ...)` percentage, because a var() in color-mix's
+     percentage position fails to parse in Tailwind v4's Lightning CSS and
+     takes the whole production build down with an opaque
+     `__turbopack_context__.a is not a function` from postcss — a literal
+     percentage is the only form that survives. */
+  .process-panel .panel-dim {
+    color: color-mix(in oklab, var(--panel-fg) 82%, var(--panel-bg));
+  }
+
+  /* Headroom is not uniform. White on the dark tones clears 14:1 and absorbs
+     dimming easily; near-black on mid-luminance brand blue tops out near
+     5.5:1, where any dimming at all drops small mono copy below AA — so that
+     one tone keeps its copy at full strength in light mode. Dark mode's tone 0
+     is a much deeper blue with ~10:1 of headroom, so it dims normally. */
+  .process-panel[data-panel-tone='0'] .panel-dim {
+    color: var(--panel-fg);
+  }
+  [data-theme='dark'] .process-panel[data-panel-tone='0'] .panel-dim {
+    color: color-mix(in oklab, var(--panel-fg) 82%, var(--panel-bg));
+  }
+  .process-panel .panel-placeholder {
+    background-color: color-mix(in oklab, var(--panel-fg) 10%, transparent);
+    border-color: color-mix(in oklab, var(--panel-fg) 22%, transparent);
+  }
+
+  .process-panel[data-panel-tone='0'] {
+    --panel-bg: #028dd0;
+    /* Near-black rather than white: white on #028DD0 is 3.67:1, which fails AA
+       for anything under 24px, and the description drops below that at 1024px. */
+    --panel-fg: #001a26;
+  }
+  .process-panel[data-panel-tone='1'] {
+    --panel-bg: #062a3d;
+    --panel-fg: #ffffff;
+  }
+  .process-panel[data-panel-tone='2'] {
+    --panel-bg: #f2f7fa;
+    --panel-fg: #0a1219;
+  }
+  .process-panel[data-panel-tone='3'] {
+    --panel-bg: #01608f;
+    --panel-fg: #ffffff;
+  }
+
+  [data-theme='dark'] .process-panel[data-panel-tone='0'] {
+    --panel-bg: #0e4462;
+    --panel-fg: #ffffff;
+  }
+  [data-theme='dark'] .process-panel[data-panel-tone='1'] {
+    --panel-bg: #03151f;
+    --panel-fg: #ffffff;
+  }
+  [data-theme='dark'] .process-panel[data-panel-tone='2'] {
+    --panel-bg: #1b2a36;
+    --panel-fg: #ffffff;
+  }
+  [data-theme='dark'] .process-panel[data-panel-tone='3'] {
+    --panel-bg: #072f47;
+    --panel-fg: #ffffff;
+  }
+
+  /* Full-viewport panels only where they actually pin. Below lg, and whenever
+     reduced motion is requested, no ScrollTrigger is created at all — so the
+     panels must collapse to their content height or the section becomes four
+     screens of mostly empty colour. */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .process-panel {
+      min-height: 100svh;
+    }
+  }
+}

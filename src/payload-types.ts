@@ -830,6 +830,10 @@ export interface ProcessStepsBlock {
   steps: {
     title: string;
     description: string;
+    /**
+     * Shown beside the description on large screens, below it on small. Leave empty for a placeholder.
+     */
+    image?: (number | null) | Media;
     id?: string | null;
   }[];
   /**
@@ -1332,6 +1336,7 @@ export interface ProcessStepsBlockSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
+        image?: T;
         id?: T;
       };
   gridPosition?:
