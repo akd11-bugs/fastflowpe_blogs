@@ -13,8 +13,12 @@ import type { Post } from '@/payload-types'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getReadingTime } from '@/utilities/getReadingTime'
+import { getServerSideURL } from '@/utilities/getURL'
+import { extractHeadings } from '@/utilities/extractHeadings'
 import { ReadingProgress } from '@/components/ReadingProgress'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { TableOfContents } from '@/components/TableOfContents'
+import { PostShareTags } from '@/components/PostShareTags'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
@@ -55,6 +59,10 @@ export default async function Post({ params: paramsPromise }: Args) {
   if (!post) return <PayloadRedirects url={url} />
 
   const readingTime = getReadingTime(post.content)
+  const headings = extractHeadings(post.content)
+  const postCategories = (post.categories || []).filter(
+    (category): category is Exclude<typeof category, number> => typeof category === 'object',
+  )
 
   return (
     <article className="pt-16 pb-16">
@@ -67,24 +75,44 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
+      <Breadcrumbs
+        className="mx-auto max-w-[48rem]"
+        items={[
+          { label: 'Blog', href: '/posts' },
+          ...postCategories.slice(0, 1).map((category) => ({
+            label: category.title || 'Untitled category',
+            href: category.slug ? `/posts?category=${category.slug}` : undefined,
+          })),
+          { label: post.title },
+        ]}
+      />
+
+      {/* Heading, then image — PostHero owns both, in that order — then the
+          rest of the article content below. */}
       <PostHero post={post} readingTime={readingTime} />
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
-          <Breadcrumbs
-            items={[
-              { label: 'Blog', href: '/posts' },
-              ...(post.categories || [])
-                .filter((category): category is Exclude<typeof category, number> => typeof category === 'object')
-                .slice(0, 1)
-                .map((category) => ({
-                  label: category.title || 'Untitled category',
-                  href: category.slug ? `/posts?category=${category.slug}` : undefined,
-                })),
-              { label: post.title },
-            ]}
-          />
+          {headings.length > 1 && (
+            <div className="mx-auto mb-10 max-w-[48rem]">
+              <TableOfContents headings={headings} />
+            </div>
+          )}
+
           <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+
+          <div className="mx-auto mt-10 max-w-[48rem]">
+            <PostShareTags
+              categories={postCategories.map((category) => ({
+                id: String(category.id),
+                title: category.title || 'Untitled category',
+                slug: category.slug,
+              }))}
+              title={post.title}
+              url={`${getServerSideURL()}${url}`}
+            />
+          </div>
+
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts
               className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"

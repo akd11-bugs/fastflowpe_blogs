@@ -20,6 +20,8 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { nodeText } from '@/utilities/extractHeadings'
+import { createSlugDeduper } from '@/utilities/slugify'
 import { cn } from '@/utilities/ui'
 
 type NodeTypes =
@@ -35,25 +37,42 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
 }
 
-const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
-  ...defaultConverters,
-  ...LinkJSXConverter({ internalDocToHref }),
-  blocks: {
-    banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
-    mediaBlock: ({ node }) => (
-      <MediaBlock
-        className="col-start-1 col-span-3"
-        imgClassName="m-0"
-        {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
-        enableGutter={false}
-        disableInnerContainer={true}
-      />
-    ),
-    code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
-    cta: ({ node }) => <CallToActionBlock {...node.fields} />,
-  },
-})
+const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => {
+  // Scoped to this call, not module-level — the module runs on the server
+  // across many documents, and a shared counter here would let one post's
+  // heading numbering leak into the next.
+  const nextId = createSlugDeduper()
+
+  return {
+    ...defaultConverters,
+    ...LinkJSXConverter({ internalDocToHref }),
+    // Only h2/h3 get an id — matching TableOfContents, which only lists
+    // those two levels. Ids must come from the SAME deduper instance so a
+    // repeated heading text ("Overview" twice) gets the same suffixed slug
+    // here as it does in the extracted TOC entries.
+    heading: ({ node, nodesToJSX }) => {
+      const Tag = node.tag
+      const children = nodesToJSX({ nodes: node.children })
+      if (node.tag !== 'h2' && node.tag !== 'h3') return <Tag>{children}</Tag>
+      return <Tag id={nextId(nodeText(node))}>{children}</Tag>
+    },
+    blocks: {
+      banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
+      mediaBlock: ({ node }) => (
+        <MediaBlock
+          className="col-start-1 col-span-3"
+          imgClassName="m-0"
+          {...node.fields}
+          captionClassName="mx-auto max-w-[48rem]"
+          enableGutter={false}
+          disableInnerContainer={true}
+        />
+      ),
+      code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
+      cta: ({ node }) => <CallToActionBlock {...node.fields} />,
+    },
+  }
+}
 
 type Props = {
   data: DefaultTypedEditorState

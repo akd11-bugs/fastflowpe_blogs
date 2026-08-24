@@ -2,14 +2,19 @@ import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
+import { cn } from '@/utilities/ui'
+
 export type Crumb = {
   label: string
   href?: string
 }
 
-export const Breadcrumbs: React.FC<{ items: Crumb[] }> = ({ items }) => {
+export const Breadcrumbs: React.FC<{ items: Crumb[]; className?: string }> = ({
+  items,
+  className,
+}) => {
   return (
-    <nav aria-label="Breadcrumb" className="container mb-6">
+    <nav aria-label="Breadcrumb" className={cn('container mb-6', className)}>
       <ol className="flex items-center flex-wrap gap-2 text-sm text-muted-foreground">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
