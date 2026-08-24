@@ -1,7 +1,6 @@
 'use client'
 
 import { Check, Copy, Linkedin, X as XIcon } from 'lucide-react'
-import Link from 'next/link'
 import React, { useState } from 'react'
 
 import { cn } from '@/utilities/ui'
@@ -58,12 +57,15 @@ export const PostShareTags: React.FC<{
     <div className="flex flex-col gap-6 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
       {categories.length > 0 && (
         <div className="flex flex-wrap gap-2">
+          {/* Plain tags, not filter links — there's no per-category listing
+              page anymore for them to point at (the blog IS the homepage, and
+              its Archive block shows a fixed admin-picked set, not a
+              query-string-driven filter). */}
           {categories.map((category) => {
             const color = stringToColor(category.title)
             return (
-              <Link
+              <span
                 key={category.id}
-                href={category.slug ? `/posts?category=${category.slug}` : '/posts'}
                 className={cn(
                   'inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide transition-opacity hover:opacity-80',
                   color.solidBg,
@@ -71,7 +73,7 @@ export const PostShareTags: React.FC<{
                 )}
               >
                 {category.title}
-              </Link>
+              </span>
             )
           })}
         </div>

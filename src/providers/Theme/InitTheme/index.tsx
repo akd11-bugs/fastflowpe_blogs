@@ -10,20 +10,18 @@ export const InitTheme: React.FC = () => {
       dangerouslySetInnerHTML={{
         __html: `
   (function () {
+    // Site is light-only — mirrors providers/Theme/shared.ts's
+    // getImplicitPreference, which this inline script can't import since it
+    // has to run before any JS bundle loads.
     function getImplicitPreference() {
-      var mediaQuery = '(prefers-color-scheme: dark)'
-      var mql = window.matchMedia(mediaQuery)
-      var hasImplicitPreference = typeof mql.matches === 'boolean'
-
-      if (hasImplicitPreference) {
-        return mql.matches ? 'dark' : 'light'
-      }
-
-      return null
+      return 'light'
     }
 
+    // Only 'light' is a valid stored preference now, so a visitor who toggled
+    // dark mode before this change and still has it in localStorage doesn't
+    // keep seeing it — the stale value just falls through to the default below.
     function themeIsValid(theme) {
-      return theme === 'light' || theme === 'dark'
+      return theme === 'light'
     }
 
     var themeToSet = '${defaultTheme}'

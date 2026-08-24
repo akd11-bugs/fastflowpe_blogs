@@ -4,7 +4,6 @@ import React from 'react'
 
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 
 import { FooterNewsletter } from './FooterNewsletter'
 
@@ -61,7 +60,6 @@ export async function Footer() {
             &copy; {year} FastFlowPe. All rights reserved.
           </p>
           <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
-            <ThemeSelector />
             {legalLinks.length > 0 && (
               <nav className="flex gap-6">
                 {legalLinks.map(({ link }, i) => (

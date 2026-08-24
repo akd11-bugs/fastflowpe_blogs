@@ -75,13 +75,15 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
+      {/* No separate posts listing page — the blog IS the homepage now, so
+          "Blog" points there instead of the removed /posts index. Category
+          isn't a link: there's no per-category filtered view to send it to. */}
       <Breadcrumbs
         className="mx-auto max-w-[48rem]"
         items={[
-          { label: 'Blog', href: '/posts' },
+          { label: 'Blog', href: '/' },
           ...postCategories.slice(0, 1).map((category) => ({
             label: category.title || 'Untitled category',
-            href: category.slug ? `/posts?category=${category.slug}` : undefined,
           })),
           { label: post.title },
         ]}
