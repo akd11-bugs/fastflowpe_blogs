@@ -54,13 +54,22 @@ export const PostsExplorer: React.FC<{ posts: CardPostData[] }> = ({ posts }) =>
   return (
     <div>
       <div className="border-y border-border bg-muted/40">
-        <div className="container flex flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between">
-          <nav aria-label="Filter posts by topic" className="flex flex-wrap gap-x-6 gap-y-2">
+        {/* Per-item margins, not `gap` on flex — VS Code's built-in Simple
+            Browser is an older embedded WebView that doesn't support
+            flexbox `gap` (added to Chrome in 2020) and silently collapses it
+            to zero, fusing every tab into one unreadable run of text. Margins
+            work everywhere, so the tab row uses them instead of relying on a
+            reviewer's browser being fully current. */}
+        <div className="container flex flex-col py-5 md:flex-row md:items-center md:justify-between">
+          <nav
+            aria-label="Filter posts by topic"
+            className="mb-4 flex flex-wrap md:mb-0 md:mr-6"
+          >
             <button
               type="button"
               onClick={() => setActiveCategory(null)}
               className={cn(
-                'text-sm font-medium pb-1 border-b-2 transition-colors',
+                'mr-6 mb-2 text-sm font-medium pb-1 border-b-2 transition-colors',
                 activeCategory === null
                   ? 'border-primary text-foreground'
                   : 'border-transparent text-muted-foreground hover:text-foreground',
@@ -74,7 +83,7 @@ export const PostsExplorer: React.FC<{ posts: CardPostData[] }> = ({ posts }) =>
                 type="button"
                 onClick={() => setActiveCategory(title)}
                 className={cn(
-                  'text-sm font-medium pb-1 border-b-2 transition-colors',
+                  'mr-6 mb-2 text-sm font-medium pb-1 border-b-2 transition-colors',
                   activeCategory === title
                     ? 'border-primary text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground',
