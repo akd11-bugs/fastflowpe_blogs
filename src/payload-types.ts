@@ -588,6 +588,11 @@ export interface MediaBlock {
  * via the `definition` "ArchiveBlock".
  */
 export interface ArchiveBlock {
+  /**
+   * Big statement-style headline shown above the post grid (the "Payments. Tech. Decoded." style treatment). Leave empty to skip the masthead entirely.
+   */
+  heading?: string | null;
+  description?: string | null;
   introContent?: {
     root: {
       type: string;
@@ -1322,6 +1327,8 @@ export interface MediaBlockSelect<T extends boolean = true> {
  * via the `definition` "ArchiveBlock_select".
  */
 export interface ArchiveBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
   introContent?: T;
   populateBy?: T;
   relationTo?: T;

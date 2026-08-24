@@ -14,6 +14,20 @@ export const Archive: Block = {
   interfaceName: 'ArchiveBlock',
   fields: [
     {
+      name: 'heading',
+      type: 'text',
+      label: 'Masthead heading',
+      admin: {
+        description:
+          'Big statement-style headline shown above the post grid (the "Payments. Tech. Decoded." style treatment). Leave empty to skip the masthead entirely.',
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      label: 'Masthead description',
+    },
+    {
       name: 'introContent',
       type: 'richText',
       editor: lexicalEditor({

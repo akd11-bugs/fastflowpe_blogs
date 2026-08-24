@@ -5,14 +5,23 @@ import { getPayload } from 'payload'
 import React from 'react'
 import RichText from '@/components/RichText'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { PostsExplorer } from '@/components/PostsExplorer'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
     id?: string
   }
 > = async (props) => {
-  const { id, categories, introContent, limit: limitFromProps, populateBy, selectedDocs } = props
+  const {
+    id,
+    categories,
+    description,
+    heading,
+    introContent,
+    limit: limitFromProps,
+    populateBy,
+    selectedDocs,
+  } = props
 
   const limit = limitFromProps || 3
 
@@ -54,12 +63,20 @@ export const ArchiveBlock: React.FC<
 
   return (
     <div className="my-16" id={`block-${id}`}>
+      {heading && (
+        <div className="container mb-10 text-center md:mb-14">
+          <h2 className="text-4xl font-bold tracking-tight md:text-6xl">{heading}</h2>
+          {description && (
+            <p className="mx-auto mt-4 max-w-[42rem] text-lg text-muted-foreground">{description}</p>
+          )}
+        </div>
+      )}
       {introContent && (
         <div className="container mb-16">
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={posts} />
+      <PostsExplorer posts={posts} />
     </div>
   )
 }
