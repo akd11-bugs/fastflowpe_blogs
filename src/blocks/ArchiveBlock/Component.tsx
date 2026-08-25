@@ -6,6 +6,7 @@ import React from 'react'
 import RichText from '@/components/RichText'
 
 import { PostsExplorer } from '@/components/PostsExplorer'
+import { BlogSchema } from '@/components/StructuredData/Blog'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -63,6 +64,7 @@ export const ArchiveBlock: React.FC<
 
   return (
     <div className="my-16" id={`block-${id}`}>
+      <BlogSchema name={heading || 'FastFlowPe Blog'} description={description} posts={posts} />
       {/* Left-aligned and modestly sized on purpose — the hero above this
           block already carries the page's one big centered statement.
           Repeating that scale here read as a second, competing hero rather
