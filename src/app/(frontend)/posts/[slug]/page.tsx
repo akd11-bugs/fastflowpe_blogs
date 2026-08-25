@@ -18,7 +18,7 @@ import { extractHeadings } from '@/utilities/extractHeadings'
 import { ReadingProgress } from '@/components/ReadingProgress'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { TableOfContents } from '@/components/TableOfContents'
-import { PostShareTags } from '@/components/PostShareTags'
+import { PostSidebar } from '@/components/PostSidebar'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { BlogPostingSchema } from '@/components/StructuredData/BlogPosting'
@@ -64,6 +64,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const postCategories = (post.categories || []).filter(
     (category): category is Exclude<typeof category, number> => typeof category === 'object',
   )
+  const highlights = await queryRecentPosts({ excludeId: post.id })
 
   return (
     <article className="pt-16 pb-16">
@@ -95,37 +96,45 @@ export default async function Post({ params: paramsPromise }: Args) {
           rest of the article content below. */}
       <PostHero post={post} readingTime={readingTime} />
 
-      {/* gap-4 removed: this flex container has exactly one child (the
-          `.container` div below), so it was always a no-op. */}
-      <div className="flex flex-col items-center pt-8">
-        <div className="container">
-          {headings.length > 1 && (
-            <div className="mx-auto mb-10 max-w-[48rem]">
-              <TableOfContents headings={headings} />
-            </div>
-          )}
+      <div className="container pt-8">
+        {/* Content + sidebar side by side from lg up — the sidebar (share,
+            categories, blog highlights) sticks alongside the article instead
+            of trailing it as a footer. Below lg it drops beneath the content
+            in normal flow. */}
+        <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          <div className="max-w-[48rem] mx-auto lg:mx-0 lg:max-w-none">
+            {headings.length > 1 && (
+              <div className="mb-10">
+                <TableOfContents headings={headings} />
+              </div>
+            )}
 
-          <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+            <RichText data={post.content} enableGutter={false} />
+          </div>
 
-          <div className="mx-auto mt-10 max-w-[48rem]">
-            <PostShareTags
+          <aside className="mt-10 max-w-[48rem] mx-auto lg:mx-0 lg:mt-0 lg:sticky lg:top-32">
+            <PostSidebar
               categories={postCategories.map((category) => ({
                 id: String(category.id),
                 title: category.title || 'Untitled category',
                 slug: category.slug,
               }))}
+              highlights={highlights.map((highlight) => ({
+                slug: highlight.slug,
+                title: highlight.title,
+              }))}
               title={post.title}
               url={`${getServerSideURL()}${url}`}
             />
-          </div>
-
-          {post.relatedPosts && post.relatedPosts.length > 0 && (
-            <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-              docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-            />
-          )}
+          </aside>
         </div>
+
+        {post.relatedPosts && post.relatedPosts.length > 0 && (
+          <RelatedPosts
+            className="mt-12 max-w-[52rem] mx-auto lg:max-w-none lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+            docs={post.relatedPosts.filter((post) => typeof post === 'object')}
+          />
+        )}
       </div>
     </article>
   )
@@ -159,4 +168,29 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
+})
+
+// "Blog Highlights" in the sidebar — most recent posts other than this one.
+const queryRecentPosts = cache(async ({ excludeId }: { excludeId: number }) => {
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'posts',
+    draft: false,
+    limit: 3,
+    overrideAccess: false,
+    pagination: false,
+    sort: '-publishedAt',
+    where: {
+      id: {
+        not_equals: excludeId,
+      },
+    },
+    select: {
+      title: true,
+      slug: true,
+    },
+  })
+
+  return result.docs
 })
