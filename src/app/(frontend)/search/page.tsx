@@ -84,5 +84,10 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 export function generateMetadata(): Metadata {
   return {
     title: `FastFlowPe Blog | Search`,
+    // A dynamic, query-dependent results page — not content that should be indexed.
+    robots: {
+      index: false,
+      follow: true,
+    },
   }
 }

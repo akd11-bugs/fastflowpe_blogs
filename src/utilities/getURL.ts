@@ -8,14 +8,17 @@ import canUseDOM from './canUseDOM'
 const PRODUCTION_URL = 'https://fastflowpe-blogs.onrender.com'
 
 export const getServerSideURL = () => {
-  return (
+  const url =
     process.env.NEXT_PUBLIC_SERVER_URL ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : process.env.NODE_ENV === 'production'
         ? PRODUCTION_URL
         : 'http://localhost:3000')
-  )
+
+  // Callers concatenate this with a leading "/" — a trailing slash here (e.g. a
+  // misconfigured env var) would otherwise produce double-slash URLs everywhere.
+  return url.replace(/\/$/, '')
 }
 
 export const getClientSideURL = () => {

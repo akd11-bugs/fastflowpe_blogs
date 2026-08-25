@@ -21,8 +21,9 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
 
 export const generateMeta = async (args: {
   doc: Partial<Page> | Partial<Post> | null
+  collection?: 'pages' | 'posts'
 }): Promise<Metadata> => {
-  const { doc } = args
+  const { doc, collection = 'pages' } = args
 
   const ogImage = getImageURL(doc?.meta?.image)
 
@@ -38,7 +39,8 @@ export const generateMeta = async (args: {
       : doc.meta.title + ' | FastFlowPe Blog'
     : 'FastFlowPe Blog'
 
-  const path = isHome ? '/' : Array.isArray(doc?.slug) ? doc?.slug.join('/') : `/${doc?.slug || ''}`
+  const slugPath = Array.isArray(doc?.slug) ? doc?.slug.join('/') : doc?.slug || ''
+  const path = isHome ? '/' : collection === 'posts' ? `/posts/${slugPath}` : `/${slugPath}`
 
   return {
     alternates: {

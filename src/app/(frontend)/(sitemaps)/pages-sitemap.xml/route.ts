@@ -2,14 +2,14 @@ import { getServerSideSitemap } from 'next-sitemap'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { unstable_cache } from 'next/cache'
+import { getServerSideURL } from '@/utilities/getURL'
 
 const getPagesSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
-    const SITE_URL =
-      process.env.NEXT_PUBLIC_SERVER_URL ||
-      process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-      'https://example.com'
+    // Trim any trailing slash — this gets concatenated with a leading "/" below,
+    // and a trailing slash on the env var produces double-slash URLs.
+    const SITE_URL = getServerSideURL().replace(/\/$/, '')
 
     const results = await payload.find({
       collection: 'pages',
@@ -31,17 +31,8 @@ const getPagesSitemap = unstable_cache(
 
     const dateFallback = new Date().toISOString()
 
-    const defaultSitemap = [
-      {
-        loc: `${SITE_URL}/search`,
-        lastmod: dateFallback,
-      },
-      {
-        loc: `${SITE_URL}/posts`,
-        lastmod: dateFallback,
-      },
-    ]
-
+    // /search is noindexed (dynamic, query-dependent) and /posts was intentionally
+    // removed as a route — neither belongs in the sitemap.
     const sitemap = results.docs
       ? results.docs
           .filter((page) => Boolean(page?.slug))
@@ -53,7 +44,7 @@ const getPagesSitemap = unstable_cache(
           })
       : []
 
-    return [...defaultSitemap, ...sitemap]
+    return sitemap
   },
   ['pages-sitemap'],
   {

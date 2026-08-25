@@ -1,9 +1,12 @@
 // Falls back to the real production URL, not a placeholder — NEXT_PUBLIC_SERVER_URL
 // is only reliably set for local/Vercel builds, and this app is deployed on Render.
-const SITE_URL =
+// Trailing slash stripped: it gets concatenated with a leading "/" below, and a
+// trailing slash on the env var produces double-slash sitemap URLs.
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SERVER_URL ||
   process.env.VERCEL_PROJECT_PRODUCTION_URL ||
   'https://fastflowpe-blogs.onrender.com'
+).replace(/\/$/, '')
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
