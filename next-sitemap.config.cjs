@@ -1,7 +1,9 @@
+// Falls back to the real production URL, not a placeholder — NEXT_PUBLIC_SERVER_URL
+// is only reliably set for local/Vercel builds, and this app is deployed on Render.
 const SITE_URL =
   process.env.NEXT_PUBLIC_SERVER_URL ||
   process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-  'https://example.com'
+  'https://fastflowpe-blogs.onrender.com'
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
