@@ -100,8 +100,14 @@ export default async function Post({ params: paramsPromise }: Args) {
         {/* Content + sidebar side by side from lg up — the sidebar (share,
             categories, blog highlights) sticks alongside the article instead
             of trailing it as a footer. Below lg it drops beneath the content
-            in normal flow. */}
-        <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+            in normal flow.
+
+            max-w-[72rem] mx-auto: 48rem content + 4rem gap + 320px (20rem)
+            sidebar = 72rem — centered the same way, and at the same width,
+            as PostHero's image, so the 1fr content column always lands
+            flush with the image's left edge instead of the two computing
+            independent centering offsets. */}
+        <div className="lg:mx-auto lg:grid lg:max-w-[72rem] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
           <div className="max-w-[48rem] mx-auto lg:mx-0">
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}

@@ -73,8 +73,12 @@ export const PostHero: React.FC<{
         </div>
       </div>
 
+      {/* 72rem, not 64rem: matches the content+gap+sidebar row below (48rem
+          + 4rem gap + 320px sidebar), centered the same way — so the image's
+          left edge lines up with the article text's left edge instead of
+          the two drifting independently. */}
       {heroImage && typeof heroImage === 'object' && (
-        <div className="relative mx-auto mt-10 aspect-[21/9] w-full max-w-[64rem] overflow-hidden rounded-2xl">
+        <div className="relative mx-auto mt-10 aspect-[21/9] w-full max-w-[72rem] overflow-hidden rounded-2xl">
           <ParallaxImage imgClassName="object-cover" resource={heroImage} />
         </div>
       )}
