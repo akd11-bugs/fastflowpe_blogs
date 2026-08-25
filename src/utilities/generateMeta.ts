@@ -38,7 +38,12 @@ export const generateMeta = async (args: {
       : doc.meta.title + ' | FastFlowPe Blog'
     : 'FastFlowPe Blog'
 
+  const path = isHome ? '/' : Array.isArray(doc?.slug) ? doc?.slug.join('/') : `/${doc?.slug || ''}`
+
   return {
+    alternates: {
+      canonical: path,
+    },
     description: doc?.meta?.description,
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
@@ -50,7 +55,7 @@ export const generateMeta = async (args: {
           ]
         : undefined,
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: path,
     }),
     title,
   }

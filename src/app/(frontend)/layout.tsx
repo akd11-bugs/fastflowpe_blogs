@@ -11,6 +11,7 @@ import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
 import { PageTransition } from '@/providers/PageTransition'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { StructuredData } from '@/components/StructuredData'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         <InitTheme />
+        <StructuredData />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
@@ -46,7 +48,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
-          <PageTransition>{children}</PageTransition>
+          <main>
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Footer />
           <div className="grain-overlay" aria-hidden="true" />
         </Providers>
@@ -60,6 +64,6 @@ export const metadata: Metadata = {
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
+    creator: '@FastFlowPe',
   },
 }
