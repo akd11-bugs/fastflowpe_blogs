@@ -63,11 +63,15 @@ export const ArchiveBlock: React.FC<
 
   return (
     <div className="my-16" id={`block-${id}`}>
+      {/* Left-aligned and modestly sized on purpose — the hero above this
+          block already carries the page's one big centered statement.
+          Repeating that scale here read as a second, competing hero rather
+          than a section intro, which is most of what made this feel crowded. */}
       {heading && (
-        <div className="container mb-10 text-center md:mb-14">
-          <h2 className="text-4xl font-bold tracking-tight md:text-6xl">{heading}</h2>
+        <div className="container mb-8">
+          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">{heading}</h2>
           {description && (
-            <p className="mx-auto mt-4 max-w-[42rem] text-lg text-muted-foreground">{description}</p>
+            <p className="mt-2 max-w-[42rem] text-muted-foreground">{description}</p>
           )}
         </div>
       )}

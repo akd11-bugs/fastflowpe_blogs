@@ -53,63 +53,62 @@ export const PostsExplorer: React.FC<{ posts: CardPostData[] }> = ({ posts }) =>
 
   return (
     <div>
-      <div className="border-y border-border bg-muted/40">
-        {/* Per-item margins, not `gap` on flex — VS Code's built-in Simple
-            Browser is an older embedded WebView that doesn't support
-            flexbox `gap` (added to Chrome in 2020) and silently collapses it
-            to zero, fusing every tab into one unreadable run of text. Margins
-            work everywhere, so the tab row uses them instead of relying on a
-            reviewer's browser being fully current. */}
-        <div className="container flex flex-col py-5 md:flex-row md:items-center md:justify-between">
-          <nav
-            aria-label="Filter posts by topic"
-            className="mb-4 flex flex-wrap md:mb-0 md:mr-6"
+      <div className="container py-8">
+        {/* Pills, not underlined text — each tab carries its own background,
+            so it reads as a distinct chip even if the margin between two
+            pills ever renders thinner than intended (a WebView that drops
+            unsupported CSS silently, a font substitution, anything). A run
+            of plain underlined words has no such fallback: if the space
+            between them collapses, "All posts" and "Design" fuse into one
+            unreadable run. Pills can't do that — there's always a visible
+            edge between two different button backgrounds.
+            Padding, not margin, provides most of the breathing room here,
+            which is also why this reads calmer than the previous text row. */}
+        <nav aria-label="Filter posts by topic" className="flex flex-wrap">
+          <button
+            type="button"
+            onClick={() => setActiveCategory(null)}
+            className={cn(
+              'mr-2 mb-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
+              activeCategory === null
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground hover:bg-muted/70',
+            )}
           >
+            All posts
+          </button>
+          {categories.map((title) => (
             <button
+              key={title}
               type="button"
-              onClick={() => setActiveCategory(null)}
+              onClick={() => setActiveCategory(title)}
               className={cn(
-                'mr-6 mb-2 text-sm font-medium pb-1 border-b-2 transition-colors',
-                activeCategory === null
-                  ? 'border-primary text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground',
+                'mr-2 mb-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
+                activeCategory === title
+                  ? 'bg-foreground text-background'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/70',
               )}
             >
-              All posts
+              {title}
             </button>
-            {categories.map((title) => (
-              <button
-                key={title}
-                type="button"
-                onClick={() => setActiveCategory(title)}
-                className={cn(
-                  'mr-6 mb-2 text-sm font-medium pb-1 border-b-2 transition-colors',
-                  activeCategory === title
-                    ? 'border-primary text-foreground'
-                    : 'border-transparent text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {title}
-              </button>
-            ))}
-          </nav>
+          ))}
+        </nav>
 
-          <div className="relative w-full md:w-64">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search articles..."
-              aria-label="Search articles"
-              className="w-full rounded-full border border-border bg-background py-2 pl-9 pr-4 text-sm outline-none transition-colors focus:border-foreground"
-            />
-          </div>
+        <div className="relative mt-4 w-full md:w-80">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search articles..."
+            aria-label="Search articles"
+            className="w-full rounded-full border border-border bg-background py-2 pl-9 pr-4 text-sm outline-none transition-colors focus:border-foreground"
+          />
         </div>
       </div>
 
       {filtered.length > 0 ? (
-        <div className="pt-10">
+        <div className="pt-6">
           <CollectionArchive posts={filtered} />
         </div>
       ) : (
