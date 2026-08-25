@@ -10,7 +10,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
       url: `${getServerSideURL()}/website-template-OG.webp`,
     },
   ],
-  siteName: 'FastFlowPe Blog',
+  siteName: 'FastFlowPe',
   title: 'FastFlowPe Blog',
 }
 

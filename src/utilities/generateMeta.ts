@@ -26,7 +26,17 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title ? doc?.meta?.title + ' | FastFlowPe Blog' : 'FastFlowPe Blog'
+  // The homepage IS the blog now, and its own meta.title is meant to be the
+  // complete tab title (e.g. "FastFlowPe Blog | Payments, Checkout & Banking
+  // Insights...") — appending " | FastFlowPe Blog" to it, same as every
+  // other page, would duplicate the brand name in the title. Every other
+  // page/post keeps the existing "Page Title | FastFlowPe Blog" pattern.
+  const isHome = doc?.slug === 'home'
+  const title = doc?.meta?.title
+    ? isHome
+      ? doc.meta.title
+      : doc.meta.title + ' | FastFlowPe Blog'
+    : 'FastFlowPe Blog'
 
   return {
     description: doc?.meta?.description,
