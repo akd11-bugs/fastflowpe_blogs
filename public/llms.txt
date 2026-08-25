@@ -1,10 +1,10 @@
 # FastFlowPe Blog
 
-> FastFlowPe is a single platform to route, collect, disburse, and reconcile payments across every gateway and bank account a business uses. This blog publishes product updates, engineering notes, and practical guides on payment gateways, checkout optimization, UPI, and banking integrations for Indian D2C, ecommerce, and fintech teams.
+> FastFlowPe is a payment orchestration platform that lets Indian businesses connect every payment gateway and bank account into a single dashboard — routing, collecting, disbursing, and reconciling payments in real time. This blog publishes product updates, engineering notes, and practical guides on payment gateways, checkout optimization, UPI, and banking integrations for Indian D2C, ecommerce, and fintech teams.
 
 ## About
 
-- [FastFlowPe](https://fastflowpe.com): the main product site — payments infrastructure for routing, collecting, disbursing, and reconciling across gateways and banks.
+- [FastFlowPe](https://fastflowpe.com): the main product site.
 
 ## Blog
 

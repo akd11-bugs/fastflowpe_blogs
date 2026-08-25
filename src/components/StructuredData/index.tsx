@@ -1,5 +1,11 @@
 import { getServerSideURL } from '@/utilities/getURL'
 
+// Kept identical, word-for-word, to the hero copy on the homepage and to
+// public/llms.txt — entity resolution for AI answer/generative engines relies
+// on this description being consistent across every surface, not just present.
+export const CANONICAL_DESCRIPTION =
+  'FastFlowPe is a payment orchestration platform that lets Indian businesses connect every payment gateway and bank account into a single dashboard — routing, collecting, disbursing, and reconciling payments in real time.'
+
 export const StructuredData: React.FC = () => {
   const url = getServerSideURL()
 
@@ -7,6 +13,7 @@ export const StructuredData: React.FC = () => {
     '@type': 'Organization',
     name: 'GoFastFlowPe Solutions Pvt Ltd',
     alternateName: 'FastFlowPe',
+    description: CANONICAL_DESCRIPTION,
     url: 'https://fastflowpe.com',
     logo: `${url}/favicon.svg`,
     sameAs: [
