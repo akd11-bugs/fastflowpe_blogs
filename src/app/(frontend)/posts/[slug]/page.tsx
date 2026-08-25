@@ -102,7 +102,7 @@ export default async function Post({ params: paramsPromise }: Args) {
             of trailing it as a footer. Below lg it drops beneath the content
             in normal flow. */}
         <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          <div className="max-w-[48rem] mx-auto lg:mx-0 lg:max-w-none">
+          <div className="max-w-[48rem] mx-auto lg:mx-0">
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}
             {headings.length > 1 && (
