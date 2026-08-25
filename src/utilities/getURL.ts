@@ -1,11 +1,20 @@
 import canUseDOM from './canUseDOM'
 
+// Falls back to the real production URL, not localhost — NEXT_PUBLIC_SERVER_URL is
+// inlined at build time, so if Render's Docker build doesn't pass it through as a
+// build arg, no runtime env var can correct it afterward. Without this fallback,
+// every absolute URL generated server-side (canonical, og:url, og:image, JSON-LD)
+// silently becomes http://localhost:3000 in production.
+const PRODUCTION_URL = 'https://fastflowpe-blogs.onrender.com'
+
 export const getServerSideURL = () => {
   return (
     process.env.NEXT_PUBLIC_SERVER_URL ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : 'http://localhost:3000')
+      : process.env.NODE_ENV === 'production'
+        ? PRODUCTION_URL
+        : 'http://localhost:3000')
   )
 }
 
