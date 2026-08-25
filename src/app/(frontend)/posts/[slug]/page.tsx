@@ -108,13 +108,23 @@ export default async function Post({ params: paramsPromise }: Args) {
             width once, for both rows, at every viewport — nothing to keep
             in sync by hand. */}
         <div className="lg:grid lg:max-w-[96rem] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {/* No w-full at lg: an explicit width:100% computes against the
+              grid cell BEFORE margins are applied, so lg:mx-4 would add 32px
+              on top instead of shrinking the box to fit — exactly the
+              overflow that caused this to stop matching the content column's
+              width. Grid's own default stretch (width:auto) already fills
+              the cell and correctly accounts for margins. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
-            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0">
+            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mx-4 lg:mt-0 lg:w-auto">
               <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
             </div>
           )}
 
-          <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mx-0 lg:mt-10 lg:max-w-none">
+          {/* lg:mx-4 on both the image (above) and this content div — the
+              same inset on both is what keeps them the same width and
+              aligned; changing just one without the other reintroduces the
+              mismatch this layout was built to avoid. */}
+          <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mx-4 lg:mt-10 lg:max-w-none">
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}
             {headings.length > 1 && (
