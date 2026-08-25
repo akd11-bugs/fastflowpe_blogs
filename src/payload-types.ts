@@ -199,6 +199,9 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Optional for High Impact — leave empty for a plain, minimal hero with no photo.
+     */
     media?: (number | null) | Media;
   };
   layout: (

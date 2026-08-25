@@ -63,9 +63,14 @@ export const hero: Field = {
       type: 'upload',
       admin: {
         condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+        description:
+          'Optional for High Impact — leave empty for a plain, minimal hero with no photo.',
       },
       relationTo: 'media',
-      required: true,
+      // Not required: HighImpactHero (src/heros/HighImpact/index.tsx) already
+      // has a dedicated no-media layout — a plain centered-text hero, no
+      // parallax, no WebGL canvas — so the schema shouldn't force an image
+      // the component doesn't need.
     },
   ],
   label: false,
