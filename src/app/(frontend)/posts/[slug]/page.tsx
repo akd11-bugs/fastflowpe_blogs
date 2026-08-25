@@ -64,7 +64,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const postCategories = (post.categories || []).filter(
     (category): category is Exclude<typeof category, number> => typeof category === 'object',
   )
-  const highlights = await queryRecentPosts({ excludeId: post.id })
+  const otherHighlights = await queryRecentPosts({ excludeId: post.id })
 
   return (
     <article className="pt-16 pb-16">
@@ -122,10 +122,17 @@ export default async function Post({ params: paramsPromise }: Args) {
                 title: category.title || 'Untitled category',
                 slug: category.slug,
               }))}
-              highlights={highlights.map((highlight) => ({
-                slug: highlight.slug,
-                title: highlight.title,
-              }))}
+              highlights={[
+                // The article being read appears in its own highlights list —
+                // marked active, the same "you are here" role the TOC plays
+                // for headings — followed by other recent posts.
+                { slug: post.slug, title: post.title },
+                ...otherHighlights.map((highlight) => ({
+                  slug: highlight.slug,
+                  title: highlight.title,
+                })),
+              ]}
+              activeHighlightSlug={post.slug}
               title={post.title}
               url={`${getServerSideURL()}${url}`}
             />

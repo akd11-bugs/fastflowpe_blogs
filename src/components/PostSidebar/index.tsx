@@ -24,9 +24,10 @@ const sectionBox = 'border-2 border-border rounded-2xl bg-card p-6'
 export const PostSidebar: React.FC<{
   categories: Category[]
   highlights: HighlightPost[]
+  activeHighlightSlug?: string
   title: string
   url: string
-}> = ({ categories, highlights, title, url }) => {
+}> = ({ categories, highlights, activeHighlightSlug, title, url }) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -114,16 +115,34 @@ export const PostSidebar: React.FC<{
           <p className={sectionLabel}>Blog Highlights</p>
           {/* space-y, not flex `gap` — see the note in Footer/Component.tsx. */}
           <ul className="flex flex-col space-y-3">
-            {highlights.map((post) => (
-              <li key={post.slug}>
-                <Link
-                  href={`/posts/${post.slug}`}
-                  className="text-sm font-medium text-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
-                >
-                  {post.title}
-                </Link>
-              </li>
-            ))}
+            {highlights.map((post) => {
+              const isActive = post.slug === activeHighlightSlug
+              return (
+                <li key={post.slug}>
+                  {/* Left bar + indent marks "you are here" the same way the
+                      TOC's rail bolds the current section — always reserving
+                      the same space so inactive items don't shift when this
+                      one changes. */}
+                  <div
+                    className={cn(
+                      'border-l-2 pl-3',
+                      isActive ? 'border-[#028DD0]' : 'border-transparent',
+                    )}
+                  >
+                    {isActive ? (
+                      <span className="text-sm font-bold text-foreground">{post.title}</span>
+                    ) : (
+                      <Link
+                        href={`/posts/${post.slug}`}
+                        className="text-sm font-medium text-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
+                      >
+                        {post.title}
+                      </Link>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         </div>
       )}
