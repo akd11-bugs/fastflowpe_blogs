@@ -103,8 +103,10 @@ export default async function Post({ params: paramsPromise }: Args) {
             in normal flow. */}
         <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
           <div className="max-w-[48rem] mx-auto lg:mx-0 lg:max-w-none">
+            {/* On mobile, the TOC still leads the article — the sidebar
+                column below only exists from lg up. */}
             {headings.length > 1 && (
-              <div className="mb-10">
+              <div className="mb-10 lg:hidden">
                 <TableOfContents headings={headings} />
               </div>
             )}
@@ -112,7 +114,8 @@ export default async function Post({ params: paramsPromise }: Args) {
             <RichText data={post.content} enableGutter={false} />
           </div>
 
-          <aside className="mt-10 max-w-[48rem] mx-auto lg:mx-0 lg:mt-0 lg:sticky lg:top-32">
+          <aside className="mt-10 max-w-[48rem] mx-auto lg:mx-0 lg:mt-0 lg:sticky lg:top-32 space-y-6">
+            {headings.length > 1 && <TableOfContents headings={headings} />}
             <PostSidebar
               categories={postCategories.map((category) => ({
                 id: String(category.id),
