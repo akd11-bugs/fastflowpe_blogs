@@ -1,6 +1,7 @@
 import type { Post } from '@/payload-types'
 
 import { getServerSideURL } from '@/utilities/getURL'
+import { getOrganizationRef } from '@/utilities/organizationSchema'
 
 export const BlogSchema: React.FC<{
   name: string
@@ -15,6 +16,8 @@ export const BlogSchema: React.FC<{
     name,
     description: description || undefined,
     url: `${serverUrl}/`,
+    inLanguage: 'en-IN',
+    publisher: getOrganizationRef(),
     blogPost: posts.length
       ? posts.map((post) => ({
           '@type': 'BlogPosting',

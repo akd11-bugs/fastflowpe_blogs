@@ -5,18 +5,22 @@ import type { Media, Page, Post, Config } from '../payload-types'
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
 
-const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
+const getOGImage = (image?: Media | Config['db']['defaultIDType'] | null) => {
   const serverUrl = getServerSideURL()
 
-  let url = serverUrl + '/website-template-OG.webp'
-
   if (image && typeof image === 'object' && 'url' in image) {
-    const ogUrl = image.sizes?.og?.url
+    const ogSize = image.sizes?.og
 
-    url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url
+    if (ogSize?.url) {
+      return { url: serverUrl + ogSize.url, width: ogSize.width, height: ogSize.height }
+    }
+
+    return { url: serverUrl + image.url, width: image.width, height: image.height }
   }
 
-  return url
+  // 1200x630 is the actual dimension of this static fallback asset — declaring it
+  // explicitly lets social/AI crawlers render the card without fetching the image.
+  return { url: serverUrl + '/website-template-OG.webp', width: 1200, height: 630 }
 }
 
 export const generateMeta = async (args: {
@@ -25,7 +29,7 @@ export const generateMeta = async (args: {
 }): Promise<Metadata> => {
   const { doc, collection = 'pages' } = args
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  const ogImage = getOGImage(doc?.meta?.image)
 
   // The homepage IS the blog now, and its own meta.title is meant to be the
   // complete tab title (e.g. "FastFlowPe Blog | Payments, Checkout & Banking
@@ -49,13 +53,13 @@ export const generateMeta = async (args: {
     description: doc?.meta?.description,
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: [
+        {
+          url: ogImage.url,
+          width: ogImage.width || undefined,
+          height: ogImage.height || undefined,
+        },
+      ],
       title,
       url: path,
     }),

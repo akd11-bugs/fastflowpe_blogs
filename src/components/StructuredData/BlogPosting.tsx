@@ -1,6 +1,7 @@
 import type { Post } from '@/payload-types'
 
 import { getServerSideURL } from '@/utilities/getURL'
+import { getOrganizationRef } from '@/utilities/organizationSchema'
 
 const getImageURL = (image: Post['meta']) => {
   const serverUrl = getServerSideURL()
@@ -24,19 +25,13 @@ export const BlogPostingSchema: React.FC<{ post: Post }> = ({ post }) => {
     headline: post.title,
     description: post.meta?.description || undefined,
     image: image ? [image] : undefined,
+    inLanguage: 'en-IN',
     datePublished: post.publishedAt || undefined,
     dateModified: post.updatedAt || post.publishedAt || undefined,
     author: post.populatedAuthors?.length
       ? post.populatedAuthors.map((author) => ({ '@type': 'Person', name: author.name }))
-      : { '@type': 'Organization', name: 'FastFlowPe' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'GoFastFlowPe Solutions Pvt Ltd',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${getServerSideURL()}/favicon.svg`,
-      },
-    },
+      : getOrganizationRef(),
+    publisher: getOrganizationRef(),
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,
