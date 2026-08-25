@@ -7,26 +7,24 @@ import { formatAuthors } from '@/utilities/formatAuthors'
 import { stringToColor } from '@/utilities/stringToColor'
 import { cn } from '@/utilities/ui'
 
-import { ParallaxImage } from './ParallaxImage'
-
 /**
- * Heading, then image, then (from the page template) body content — a plain
- * editorial layout rather than the previous full-bleed hero with the title
- * overlaid on the image. That overlay treatment needed a dark gradient scrim
- * for the white text to read, which this layout has no use for: the title
- * is now ordinary page text, so it just uses the page's own foreground colour.
+ * Heading only — categories, title, byline/date/reading-time. The hero
+ * image used to render here too, but it needs to live inside the same CSS
+ * grid as the article content and sidebar (see posts/[slug]/page.tsx) so
+ * the grid itself guarantees matching widths at every viewport, rather
+ * than three independently-tuned max-width values drifting out of sync.
  */
 export const PostHero: React.FC<{
   post: Post
   readingTime?: number
 }> = ({ post, readingTime }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title } = post
+  const { categories, populatedAuthors, publishedAt, title } = post
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   return (
-    <div className="container">
+    <div className="container-wide">
       {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx. */}
       <div className="mx-auto flex max-w-[48rem] flex-col space-y-6">
         <div
@@ -72,16 +70,6 @@ export const PostHero: React.FC<{
           {readingTime && <span>{readingTime} min read</span>}
         </div>
       </div>
-
-      {/* 72rem, not 64rem: matches the content+gap+sidebar row below (48rem
-          + 4rem gap + 320px sidebar), centered the same way — so the image's
-          left edge lines up with the article text's left edge instead of
-          the two drifting independently. */}
-      {heroImage && typeof heroImage === 'object' && (
-        <div className="relative mx-auto mt-10 aspect-[21/9] w-full max-w-[72rem] overflow-hidden rounded-2xl">
-          <ParallaxImage imgClassName="object-cover" resource={heroImage} />
-        </div>
-      )}
     </div>
   )
 }

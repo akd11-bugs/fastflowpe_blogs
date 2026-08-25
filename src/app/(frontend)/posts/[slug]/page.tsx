@@ -11,6 +11,7 @@ import RichText from '@/components/RichText'
 import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
+import { ParallaxImage } from '@/heros/PostHero/ParallaxImage'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getReadingTime } from '@/utilities/getReadingTime'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -92,23 +93,28 @@ export default async function Post({ params: paramsPromise }: Args) {
         ]}
       />
 
-      {/* Heading, then image — PostHero owns both, in that order — then the
-          rest of the article content below. */}
+      {/* Heading only — the image now lives in the grid below, in the same
+          column as the article content. */}
       <PostHero post={post} readingTime={readingTime} />
 
-      <div className="container pt-8">
-        {/* Content + sidebar side by side from lg up — the sidebar (share,
-            categories, blog highlights) sticks alongside the article instead
-            of trailing it as a footer. Below lg it drops beneath the content
-            in normal flow.
+      <div className="container-wide">
+        {/* Image (row 1) and content (row 2) share grid column 1; the
+            sidebar spans both rows in column 2. Explicit col/row placement
+            (not DOM order) so mobile keeps a natural reading order — image,
+            article, sidebar — while desktop rearranges into the 2-row grid.
+            Sharing one grid, rather than three independently max-width'd
+            elements, is what guarantees the image and the content column
+            are always exactly the same width: the grid computes column 1's
+            width once, for both rows, at every viewport — nothing to keep
+            in sync by hand. */}
+        <div className="lg:grid lg:max-w-[96rem] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {post.heroImage && typeof post.heroImage === 'object' && (
+            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0">
+              <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
+            </div>
+          )}
 
-            max-w-[72rem] mx-auto: 48rem content + 4rem gap + 320px (20rem)
-            sidebar = 72rem — centered the same way, and at the same width,
-            as PostHero's image, so the 1fr content column always lands
-            flush with the image's left edge instead of the two computing
-            independent centering offsets. */}
-        <div className="lg:mx-auto lg:grid lg:max-w-[72rem] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          <div className="max-w-[48rem] mx-auto lg:mx-0">
+          <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mx-0 lg:mt-10 lg:max-w-none">
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}
             {headings.length > 1 && (
@@ -120,7 +126,7 @@ export default async function Post({ params: paramsPromise }: Args) {
             <RichText data={post.content} enableGutter={false} />
           </div>
 
-          <aside className="mt-10 max-w-[48rem] mx-auto lg:mx-0 lg:mt-0 lg:sticky lg:top-32 space-y-6">
+          <aside className="mt-10 max-w-[48rem] mx-auto lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:mx-0 lg:mt-0 lg:sticky lg:top-32 space-y-6">
             {headings.length > 1 && <TableOfContents headings={headings} />}
             <PostSidebar
               categories={postCategories.map((category) => ({

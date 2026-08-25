@@ -84,6 +84,48 @@
       max-width: var(--breakpoint-2xl);
     }
   }
+
+  /* Identical to .container except the 2xl cap — for the post-page hero
+     image + content/sidebar row, which need more than 86rem to fit a
+     72rem content column at its full width beside the sidebar. Every
+     other breakpoint's max-width and padding matches .container exactly,
+     so this only changes behavior on very wide screens. */
+  .container-wide {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @variant sm {
+    .container-wide {
+      max-width: var(--breakpoint-sm);
+    }
+  }
+
+  @variant md {
+    .container-wide {
+      max-width: var(--breakpoint-md);
+      padding-inline: 2rem;
+    }
+  }
+
+  @variant lg {
+    .container-wide {
+      max-width: var(--breakpoint-lg);
+    }
+  }
+
+  @variant xl {
+    .container-wide {
+      max-width: var(--breakpoint-xl);
+    }
+  }
+
+  @variant 2xl {
+    .container-wide {
+      max-width: 100rem;
+    }
+  }
 }
 
 :root {
