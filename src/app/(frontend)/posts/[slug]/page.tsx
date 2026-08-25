@@ -108,18 +108,16 @@ export default async function Post({ params: paramsPromise }: Args) {
             are always exactly the same width: the grid computes column 1's
             width once, for both rows, at every viewport — nothing to keep
             in sync by hand. */}
-        <div className="lg:grid lg:max-w-[96rem] lg:mx-auto lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          {/* The whole grid is centered (lg:mx-auto on the grid itself, not
-              per-child margins) so column 1's left edge sits wherever a
-              96rem-capped, centered block naturally lands — the same edge
-              PostHero's heading grid resolves to, since it uses the
-              identical max-width + mx-auto + grid-cols pairing. Matching
-              margins on each child (the old lg:mx-8 approach) only matched
-              the image and content to *each other*; centering the shared
-              grid is what makes the heading line up too. No w-full at lg:
-              an explicit width:100% would compute against the grid cell
-              before mx-auto's centering, causing overflow — grid's default
-              stretch (width:auto) already fills the cell correctly. */}
+        <div className="lg:grid lg:max-w-[96rem] lg:ml-32 lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {/* lg:ml-32 (not lg:mx-auto): a deliberate asymmetric inset — a
+              large gap on the left only, not a centered block. The margin
+              lives on the grid itself, not per-child, so column 1's left
+              edge is set once and PostHero's heading grid (which mirrors
+              this exact max-width + margin + grid-cols) lines up with it
+              automatically. No w-full at lg: an explicit width:100% would
+              compute against the grid cell before the margin shrinks it,
+              causing overflow — grid's default stretch (width:auto)
+              already fills the cell correctly. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
             <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0 lg:w-auto">
               <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />

@@ -26,12 +26,12 @@ export const PostHero: React.FC<{
   return (
     <div className="container-wide">
       {/* Mirrors the grid in posts/[slug]/page.tsx exactly (same
-          lg:max-w-[96rem] lg:mx-auto lg:grid-cols-[1fr_320px]) so column 1
+          lg:max-w-[96rem] lg:ml-32 lg:grid-cols-[1fr_320px]) so column 1
           resolves to the identical left edge and width in both places —
           the heading sits in that same column instead of being centered
           independently at its own max-width, which only lined up with the
           image/content by coincidence at one specific viewport. */}
-      <div className="lg:grid lg:max-w-[96rem] lg:mx-auto lg:grid-cols-[1fr_320px] lg:gap-16">
+      <div className="lg:grid lg:max-w-[96rem] lg:ml-32 lg:grid-cols-[1fr_320px] lg:gap-16">
         <div className="mx-auto flex max-w-[48rem] flex-col space-y-6 lg:col-start-1 lg:mx-0 lg:max-w-none">
           <div
             className="flex flex-wrap reveal-up"
