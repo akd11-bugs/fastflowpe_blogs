@@ -25,8 +25,16 @@ export const PostHero: React.FC<{
 
   return (
     <div className="container-wide">
-      {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx. */}
-      <div className="mx-auto flex max-w-[48rem] flex-col space-y-6">
+      {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx.
+
+          lg:mx-8, not centered: the image and content below (in
+          posts/[slug]/page.tsx) are flush-left with lg:mx-8 inside their
+          own copy of this same container-wide, not centered — so this
+          heading needs the identical margin, not just the identical
+          max-width, to actually share their left edge. Two independently
+          centered/margined blocks at different widths only look aligned
+          by coincidence at one specific viewport. */}
+      <div className="mx-auto flex max-w-[48rem] flex-col space-y-6 lg:mx-8">
         <div
           className="flex flex-wrap reveal-up"
           style={{ '--stagger-index': 0 } as React.CSSProperties}
