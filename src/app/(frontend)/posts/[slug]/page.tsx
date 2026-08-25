@@ -99,8 +99,9 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="container-wide">
         {/* Image (row 1) and content (row 2) share grid column 1; the
-            sidebar spans both rows in column 2. Explicit col/row placement
-            (not DOM order) so mobile keeps a natural reading order — image,
+            sidebar sits in column 2, row 2 — beside the content, not
+            stretched up beside the image. Explicit col/row placement (not
+            DOM order) so mobile keeps a natural reading order — image,
             article, sidebar — while desktop rearranges into the 2-row grid.
             Sharing one grid, rather than three independently max-width'd
             elements, is what guarantees the image and the content column
@@ -109,22 +110,22 @@ export default async function Post({ params: paramsPromise }: Args) {
             in sync by hand. */}
         <div className="lg:grid lg:max-w-[96rem] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
           {/* No w-full at lg: an explicit width:100% computes against the
-              grid cell BEFORE margins are applied, so lg:mx-4 would add 32px
+              grid cell BEFORE margins are applied, so lg:mx-8 would add 32px
               on top instead of shrinking the box to fit — exactly the
               overflow that caused this to stop matching the content column's
               width. Grid's own default stretch (width:auto) already fills
               the cell and correctly accounts for margins. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
-            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mx-4 lg:mt-0 lg:w-auto">
+            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mx-8 lg:mt-0 lg:w-auto">
               <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
             </div>
           )}
 
-          {/* lg:mx-4 on both the image (above) and this content div — the
+          {/* lg:mx-8 on both the image (above) and this content div — the
               same inset on both is what keeps them the same width and
               aligned; changing just one without the other reintroduces the
               mismatch this layout was built to avoid. */}
-          <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mx-4 lg:mt-10 lg:max-w-none">
+          <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mx-8 lg:mt-10 lg:max-w-none">
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}
             {headings.length > 1 && (
@@ -136,7 +137,12 @@ export default async function Post({ params: paramsPromise }: Args) {
             <RichText data={post.content} enableGutter={false} />
           </div>
 
-          <aside className="mt-10 max-w-[48rem] mx-auto lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:mx-0 lg:mt-0 lg:sticky lg:top-32 space-y-6">
+          {/* row-start-2, not row-span-2 from row 1 — the sidebar (including
+              the TOC) sits beside the article content, not stretched up
+              beside the image too. Same lg:mt-10 as the content div so the
+              sidebar's top (and the TOC inside it) lines up with the
+              article's first line, not with row 2's raw top edge. */}
+          <aside className="mt-10 max-w-[48rem] mx-auto lg:col-start-2 lg:row-start-2 lg:mx-0 lg:mt-10 lg:sticky lg:top-32 space-y-6">
             {headings.length > 1 && <TableOfContents headings={headings} />}
             <PostSidebar
               categories={postCategories.map((category) => ({
