@@ -2,26 +2,27 @@ import type { Page, Post } from '@/payload-types'
 
 type LinkFields = {
   type?: ('reference' | 'custom') | null
-  reference?:
-    | { relationTo: 'pages'; value: number | Page | null }
-    | { relationTo: 'posts'; value: number | Post | null }
-    | null
+  reference?: {
+    relationTo: 'pages' | 'posts'
+    value: Page | Post | string | number
+  } | null
   url?: string | null
 }
 
 /**
- * Mirrors the href derivation inside components/Link/index.tsx's CMSLink —
- * duplicated rather than imported because CMSLink is a component, and this
- * is needed as a plain string before render (to decide a nav item's active
- * state), not as JSX.
+ * The one place a link's fields resolve to an href — used directly by
+ * CMSLink (components/Link/index.tsx) and, as a plain string ahead of
+ * render, by nav components that need to compare it against the current
+ * pathname for active-state highlighting.
  */
 export function resolveLinkHref(link?: LinkFields | null): string | null {
   if (!link) return null
+  const { type, reference, url } = link
 
-  if (link.type === 'reference' && typeof link.reference?.value === 'object' && link.reference.value?.slug) {
-    const prefix = link.reference.relationTo !== 'pages' ? `/${link.reference.relationTo}` : ''
-    return `${prefix}/${link.reference.value.slug}`
+  if (type === 'reference' && typeof reference?.value === 'object' && reference.value?.slug) {
+    const prefix = reference.relationTo !== 'pages' ? `/${reference.relationTo}` : ''
+    return `${prefix}/${reference.value.slug}`
   }
 
-  return link.url || null
+  return url || null
 }

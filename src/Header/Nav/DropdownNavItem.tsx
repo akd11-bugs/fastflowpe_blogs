@@ -3,26 +3,23 @@ import React from 'react'
 import type { Header as HeaderType } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
+import { NAV_LINK_INACTIVE, getVisibleDropdownGroups } from '../navStyles'
 
 type NavItem = NonNullable<HeaderType['navItems']>[number]
 
 /**
  * Hover-triggered dropdown, matching fastflowpe.com's Products/Industry nav
- * items (confirmed via direct inspection of the live site, not a
- * screenshot guess): plain CSS group-hover, no click/JS needed on desktop —
+ * items: plain CSS group-hover, no click/JS needed on desktop —
  * `invisible`/`opacity-0` rather than `hidden` so the fade transition can
  * run, and the panel sits flush under the trigger (no gap) so the pointer
  * never leaves the hoverable area on the way down to it.
  */
 export const DropdownNavItem: React.FC<{ item: NavItem }> = ({ item }) => {
-  const groups = (item.dropdownGroups || []).filter((group) => (group.links || []).length > 0)
+  const groups = getVisibleDropdownGroups(item)
 
   return (
     <li className="group relative">
-      <button
-        type="button"
-        className="flex items-center gap-1 px-3 py-1 text-base text-[#0F3261] transition-colors hover:text-[#028DD0]"
-      >
+      <button type="button" className={`flex items-center gap-1 px-3 py-1 text-base ${NAV_LINK_INACTIVE}`}>
         <span>{item.link.label}</span>
       </button>
 
@@ -38,7 +35,7 @@ export const DropdownNavItem: React.FC<{ item: NavItem }> = ({ item }) => {
               {(group.links || []).map(({ link }, j) => (
                 <CMSLink
                   key={j}
-                  className="mb-3 text-sm text-[#0F3261] last:mb-0 hover:text-[#028DD0]"
+                  className={`mb-3 text-sm last:mb-0 ${NAV_LINK_INACTIVE}`}
                   {...link}
                   appearance="link"
                 />

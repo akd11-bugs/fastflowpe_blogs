@@ -8,6 +8,13 @@ import type { Header as HeaderType } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { cn } from '@/utilities/ui'
 import { resolveLinkHref } from '@/utilities/resolveLinkHref'
+import {
+  GRADIENT_BUTTON,
+  NAV_LINK_ACTIVE,
+  NAV_LINK_INACTIVE,
+  OUTLINE_BUTTON,
+  getVisibleDropdownGroups,
+} from './navStyles'
 
 /**
  * Hamburger button + accordion menu panel, `md:hidden`. The panel is
@@ -49,18 +56,14 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         <div className="absolute inset-x-0 top-full z-20 mt-2 max-h-[75vh] overflow-y-auto rounded-[10px] bg-white p-4 shadow-lg md:hidden">
           <ul className="flex flex-col">
             {navItems.map((item, i) => {
-              const groups = (item.dropdownGroups || []).filter((group) => (group.links || []).length > 0)
+              const groups = getVisibleDropdownGroups(item)
               const isActive = resolveLinkHref(item.link) === pathname
 
               if (groups.length === 0) {
                 return (
                   <li key={i} className="border-b border-gray-100 last:border-0" onClick={close}>
                     <CMSLink
-                      className={
-                        isActive
-                          ? 'block py-3 text-base font-semibold text-[#028DD0]'
-                          : 'block py-3 text-base font-normal text-[#0F3261]'
-                      }
+                      className={`block py-3 text-base ${isActive ? NAV_LINK_ACTIVE : NAV_LINK_INACTIVE}`}
                       {...item.link}
                       appearance="link"
                     />
@@ -76,7 +79,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                     type="button"
                     aria-expanded={expanded}
                     onClick={() => setExpandedIndex(expanded ? null : i)}
-                    className="flex w-full items-center justify-between py-3 text-base font-normal text-[#0F3261]"
+                    className={`flex w-full items-center justify-between py-3 text-base ${NAV_LINK_INACTIVE}`}
                   >
                     <span>{item.link.label}</span>
                     <ChevronDown className={cn('h-4 w-4 transition-transform', expanded && 'rotate-180')} />
@@ -95,7 +98,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                             {(group.links || []).map(({ link }, li) => (
                               <li key={li} onClick={close}>
                                 <CMSLink
-                                  className="block py-2 text-sm text-[#0F3261]"
+                                  className={`block py-2 text-sm ${NAV_LINK_INACTIVE}`}
                                   {...link}
                                   appearance="link"
                                 />
@@ -116,7 +119,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
               <CMSLink
                 {...loginLink}
                 label={loginLink?.label || 'Login'}
-                className="w-full rounded-[6px] border-[#028DD0] px-7 py-2 text-center text-[15px] font-semibold text-[#028DD0]"
+                className={`w-full px-7 py-2 text-center ${OUTLINE_BUTTON}`}
                 appearance="outline"
               />
             </div>
@@ -124,7 +127,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
               <CMSLink
                 {...signupLink}
                 label={signupLink?.label || 'Sign Up'}
-                className="w-full rounded-[6px] bg-[linear-gradient(105.97deg,_#028DD0_0%,_#4761E4_100%)] px-7 py-3 text-center text-[15px] font-semibold text-white"
+                className={`w-full px-7 py-3 text-center ${GRADIENT_BUTTON}`}
                 appearance="default"
               />
             </div>

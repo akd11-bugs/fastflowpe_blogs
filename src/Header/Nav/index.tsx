@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 
 import { resolveLinkHref } from '@/utilities/resolveLinkHref'
+import { NAV_LINK_ACTIVE, NAV_LINK_INACTIVE, getVisibleDropdownGroups } from '../navStyles'
 
 import { DropdownNavItem } from './DropdownNavItem'
 
@@ -28,19 +29,14 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     <div className="hidden items-center rounded-full border border-gray-200 px-2 py-1 md:flex">
       <ul className="flex items-center">
         {navItems.map((item, i) => {
-          const hasDropdown = (item.dropdownGroups || []).some((group) => (group.links || []).length > 0)
-          if (hasDropdown) return <DropdownNavItem key={i} item={item} />
+          if (getVisibleDropdownGroups(item).length > 0) return <DropdownNavItem key={i} item={item} />
 
           const isActive = resolveLinkHref(item.link) === pathname
 
           return (
             <li key={i}>
               <CMSLink
-                className={
-                  isActive
-                    ? 'flex items-center px-3 py-1 text-base font-semibold text-[#028DD0]'
-                    : 'flex items-center px-3 py-1 text-base font-normal text-[#0F3261] transition-colors hover:text-[#028DD0]'
-                }
+                className={`flex items-center px-3 py-1 text-base ${isActive ? NAV_LINK_ACTIVE : NAV_LINK_INACTIVE}`}
                 {...item.link}
                 appearance="link"
               >

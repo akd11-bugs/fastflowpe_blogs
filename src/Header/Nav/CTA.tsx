@@ -6,6 +6,8 @@ import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
 import { ArrowRight, SearchIcon } from 'lucide-react'
 
+import { GRADIENT_BUTTON, OUTLINE_BUTTON } from '../navStyles'
+
 /** Search icon + Login/Sign Up — see the note in Nav/index.tsx on why this
  * is a sibling of HeaderNav rather than nested inside it. */
 export const HeaderCTA: React.FC<{ data: HeaderType }> = ({ data }) => {
@@ -24,16 +26,13 @@ export const HeaderCTA: React.FC<{ data: HeaderType }> = ({ data }) => {
       <CMSLink
         {...loginLink}
         label={loginLink?.label || 'Login'}
-        className="mr-3 rounded-[6px] border-[#028DD0] px-7 py-2 text-[15px] font-semibold text-[#028DD0] hover:bg-[#028DD0]/5"
+        className={`mr-3 px-7 py-2 hover:bg-[#028DD0]/5 ${OUTLINE_BUTTON}`}
         appearance="outline"
       />
-      {/* Exact gradient + arrow from the live site, not a generic Tailwind
-          blue — this specific angle/stop pair is the brand's actual CTA
-          treatment. */}
       <CMSLink
         {...signupLink}
         label={signupLink?.label || 'Sign Up'}
-        className="rounded-[6px] bg-[linear-gradient(105.97deg,_#028DD0_0%,_#4761E4_100%)] px-7 py-3 text-[15px] font-semibold text-white shadow-sm hover:-translate-y-0 hover:opacity-90 hover:shadow-sm"
+        className={`px-7 py-3 hover:-translate-y-0 hover:opacity-90 hover:shadow-sm ${GRADIENT_BUTTON}`}
         appearance="default"
       >
         <ArrowRight className="h-5 w-5" />
