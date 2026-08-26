@@ -18,10 +18,12 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     // Fixed insets from the viewport edges (left-2/right-2, wider at md),
     // not a centered max-w container — fastflowpe.com's own header has no
     // max-width cap, just a constant gutter at any viewport width. The
-    // bg-white/70 + backdrop-blur-sm tint stays legible over any hero
-    // behind it, so this no longer needs to swap to a dark variant —
+    // bg-white/70 + backdrop-blur tint stays legible over any hero behind
+    // it, so this no longer needs to swap to a dark variant —
     // setHeaderTheme('dark'/'light') calls elsewhere are harmless no-ops.
-    <header className="fixed top-3 md:top-6 left-2 md:left-8 right-2 md:right-8 z-50 rounded-[10px] bg-white/70 shadow-sm backdrop-blur-sm">
+    // backdrop-blur-[4px], not the backdrop-blur-sm preset (8px in this
+    // Tailwind version) — live site measures blur(4px) exactly.
+    <header className="fixed top-3 md:top-6 left-2 md:left-8 right-2 md:right-8 z-50 rounded-[10px] bg-white/70 shadow-sm backdrop-blur-[4px]">
       {/* relative: MobileNav's dropdown panel is `absolute inset-x-0
           top-full` and needs this as its positioned ancestor to span the
           full header width. */}
