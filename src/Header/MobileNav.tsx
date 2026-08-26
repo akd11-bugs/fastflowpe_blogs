@@ -119,6 +119,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
               <CMSLink
                 {...loginLink}
                 label={loginLink?.label || 'Login'}
+                size="clear"
                 className={`w-full px-7 py-2 text-center ${OUTLINE_BUTTON}`}
                 appearance="outline"
               />
@@ -127,6 +128,7 @@ export const MobileNav: React.FC<{ data: HeaderType }> = ({ data }) => {
               <CMSLink
                 {...signupLink}
                 label={signupLink?.label || 'Sign Up'}
+                size="clear"
                 className={`w-full px-7 py-3 text-center ${GRADIENT_BUTTON}`}
                 appearance="default"
               />

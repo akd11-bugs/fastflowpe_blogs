@@ -23,15 +23,25 @@ export const HeaderCTA: React.FC<{ data: HeaderType }> = ({ data }) => {
           is separate: a URL can be set without a label (the admin field
           isn't blocking on it), and CMSLink renders nothing for a blank
           label, which otherwise shows up as a blank button. */}
+      {/* size="clear" on both: the default Button size variant forces
+          h-10 (fixed height, live measures a natural ~47px from padding
+          alone) and, once an icon child is present, a `has-[>svg]:px-3`
+          rule whose :has() selector out-specificities a plain px-7 class
+          regardless of source order — collapsing the Sign Up button's
+          padding to 12px on every side instead of the intended 12px 28px.
+          size="clear" applies neither, leaving only this className's own
+          padding in effect. */}
       <CMSLink
         {...loginLink}
         label={loginLink?.label || 'Login'}
-        className={`mr-3 px-7 py-2 hover:bg-[#028DD0]/5 ${OUTLINE_BUTTON}`}
+        size="clear"
+        className={`mr-3 px-7 py-2 hover:bg-[#008DD2]/5 ${OUTLINE_BUTTON}`}
         appearance="outline"
       />
       <CMSLink
         {...signupLink}
         label={signupLink?.label || 'Sign Up'}
+        size="clear"
         className={`px-7 py-3 hover:-translate-y-0 hover:opacity-90 hover:shadow-sm ${GRADIENT_BUTTON}`}
         appearance="default"
       >
