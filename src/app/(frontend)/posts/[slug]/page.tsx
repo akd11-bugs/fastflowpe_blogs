@@ -108,21 +108,29 @@ export default async function Post({ params: paramsPromise }: Args) {
             are always exactly the same width: the grid computes column 1's
             width once, for both rows, at every viewport — nothing to keep
             in sync by hand. */}
-        <div className="lg:grid lg:max-w-[80rem] lg:mx-auto lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          {/* lg:mx-auto, not a fixed lg:ml-*: a fixed rem offset doesn't
-              scale with viewport width, so it reads as negligible on a wide
-              monitor and excessive on a narrow one. Centering an 80rem grid
-              inside the wider container instead leaves real, proportional
-              leftover space split evenly on both sides. The margin lives on
-              the grid itself, not per-child, so column 1's left edge is set
-              once and PostHero's heading grid (which mirrors this exact
-              max-width + margin + grid-cols) lines up with it automatically.
-              No w-full at lg: an explicit width:100% would compute against
-              the grid cell before mx-auto's centering, causing overflow —
-              grid's default stretch (width:auto) already fills the cell
-              correctly. */}
+        <div className="lg:grid lg:ml-[14%] lg:mr-[8%] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {/* Percentage margins, not a fixed rem/max-w+mx-auto pair: a fixed
+              offset doesn't scale with viewport width (it read as negligible
+              on a wide monitor, excessive on a narrow one), and mx-auto only
+              gives an equal split. ml-14%/mr-8% scales with the viewport on
+              both sides while keeping the left gap bigger than the right —
+              no explicit max-w needed, since the grid's own width is just
+              whatever's left after these margins, and the article column's
+              actual reading width is separately capped by RichText's own
+              `prose` class, not by this grid. The margin lives on the grid
+              itself, not per-child, so column 1's left edge is set once and
+              PostHero's heading grid (which mirrors this exact margin +
+              grid-cols pairing) lines up with it automatically. No w-full at
+              lg: an explicit width:100% would compute against the grid cell
+              before the margins shrink it, causing overflow — grid's default
+              stretch (width:auto) already fills the cell correctly. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
-            <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0 lg:w-auto">
+            <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0 lg:w-auto">
+              {/* 16/9, not 21/9: the source images run close to a 3:2 ratio,
+                  so the old ultra-wide 21/9 crop box was cutting off the top
+                  and bottom of the illustration under object-cover. 16/9
+                  keeps a cinematic hero band while showing much more of the
+                  image. */}
               <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
             </div>
           )}
