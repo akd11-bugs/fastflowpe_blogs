@@ -31,9 +31,18 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           <SearchIcon className="w-5 text-muted-foreground hover:text-foreground" />
         </Link>
         {/* CMSLink itself returns null when no URL/reference is configured
-            yet in the admin — no extra guard needed here. */}
-        <CMSLink {...loginLink} className="mr-3" size="sm" appearance="outline" />
-        <CMSLink {...signupLink} size="sm" appearance="default">
+            yet in the admin — no extra guard here. The label fallback below
+            is separate: a URL can be set without a label (the admin field
+            isn't blocking on it), and CMSLink renders nothing for a blank
+            label, which otherwise shows up as a blank button. */}
+        <CMSLink
+          {...loginLink}
+          label={loginLink?.label || 'Login'}
+          className="mr-3"
+          size="sm"
+          appearance="outline"
+        />
+        <CMSLink {...signupLink} label={signupLink?.label || 'Sign Up'} size="sm" appearance="default">
           <ArrowRight className="h-4 w-4" />
         </CMSLink>
       </div>
