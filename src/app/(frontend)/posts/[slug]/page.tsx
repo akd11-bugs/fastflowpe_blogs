@@ -108,16 +108,19 @@ export default async function Post({ params: paramsPromise }: Args) {
             are always exactly the same width: the grid computes column 1's
             width once, for both rows, at every viewport — nothing to keep
             in sync by hand. */}
-        <div className="lg:grid lg:max-w-[96rem] lg:ml-32 lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          {/* lg:ml-32 (not lg:mx-auto): a deliberate asymmetric inset — a
-              large gap on the left only, not a centered block. The margin
-              lives on the grid itself, not per-child, so column 1's left
-              edge is set once and PostHero's heading grid (which mirrors
-              this exact max-width + margin + grid-cols) lines up with it
-              automatically. No w-full at lg: an explicit width:100% would
-              compute against the grid cell before the margin shrinks it,
-              causing overflow — grid's default stretch (width:auto)
-              already fills the cell correctly. */}
+        <div className="lg:grid lg:max-w-[80rem] lg:mx-auto lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {/* lg:mx-auto, not a fixed lg:ml-*: a fixed rem offset doesn't
+              scale with viewport width, so it reads as negligible on a wide
+              monitor and excessive on a narrow one. Centering an 80rem grid
+              inside the wider container instead leaves real, proportional
+              leftover space split evenly on both sides. The margin lives on
+              the grid itself, not per-child, so column 1's left edge is set
+              once and PostHero's heading grid (which mirrors this exact
+              max-width + margin + grid-cols) lines up with it automatically.
+              No w-full at lg: an explicit width:100% would compute against
+              the grid cell before mx-auto's centering, causing overflow —
+              grid's default stretch (width:auto) already fills the cell
+              correctly. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
             <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0 lg:w-auto">
               <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
