@@ -66,8 +66,7 @@ export const Card: React.FC<{
   return (
     <article
       className={cn(
-        'group relative h-full flex flex-col border-2 border-border rounded-2xl overflow-hidden bg-card hover:cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
-        accentColor.accentBorder,
+        'group relative h-full flex flex-col rounded-2xl overflow-hidden bg-card cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
         className,
       )}
       ref={card.ref}

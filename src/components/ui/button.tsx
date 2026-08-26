@@ -11,17 +11,25 @@ const buttonVariants = cva(
   // passes, so there's no specific child to put a margin on directly. The
   // selector adds margin-left to any direct child that has a preceding
   // sibling, which is gap-2's effect without depending on `gap` support.
-  "inline-flex items-center justify-center [&>*+*]:ml-2 whitespace-nowrap rounded-xl text-sm font-bold transition-[color,box-shadow,transform] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0",
+  "inline-flex items-center justify-center [&>*+*]:ml-2 whitespace-nowrap rounded-xl text-sm font-bold transition-[color,box-shadow,transform] duration-300 cursor-pointer disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0",
   {
     variants: {
+      // hover:shadow-xl hover:-translate-y-1 on destructive/outline/secondary/
+      // ghost matches the Card component's lift+shadow exactly. default keeps
+      // its own hard-edge neobrutalist shadow (already an equivalent lift
+      // effect, just this site's established style for primary CTAs) rather
+      // than being unified with the soft shadow-xl. link stays plain — a
+      // lift/shadow on inline text would look broken.
       variant: {
         default:
           'bg-primary text-primary-foreground shadow-sm hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--border)]',
-        destructive: 'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
+        destructive:
+          'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 hover:shadow-xl hover:-translate-y-1',
         outline:
-          'border-2 border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+          'border-2 border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground hover:shadow-xl hover:-translate-y-1',
+        secondary:
+          'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 hover:shadow-xl hover:-translate-y-1',
+        ghost: 'hover:bg-accent hover:text-accent-foreground hover:shadow-xl hover:-translate-y-1',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
