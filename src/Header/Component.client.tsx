@@ -6,6 +6,7 @@ import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import { HeaderCTA } from './Nav/CTA'
 import { MobileNav } from './MobileNav'
 
 interface HeaderClientProps {
@@ -35,6 +36,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           <Logo loading="eager" priority="high" className="h-8 w-auto md:h-10" />
         </Link>
         <HeaderNav data={data} />
+        <HeaderCTA data={data} />
         <MobileNav data={data} />
       </div>
     </header>
