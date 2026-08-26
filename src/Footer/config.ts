@@ -29,9 +29,66 @@ export const Footer: GlobalConfig = {
       },
     },
     {
+      name: 'companyName',
+      type: 'text',
+      admin: {
+        description: 'Shown bold under "Connect with Us" in the footer, e.g. the legal entity name.',
+      },
+    },
+    {
+      name: 'companyAddress',
+      type: 'textarea',
+      admin: {
+        description: 'Multi-line registered address, shown under the company name in the footer.',
+      },
+    },
+    {
+      name: 'cin',
+      type: 'text',
+      label: 'CIN',
+      admin: {
+        description: 'Corporate Identification Number, shown under the address in the footer.',
+      },
+    },
+    {
+      name: 'socialLinks',
+      type: 'array',
+      maxRows: 6,
+      admin: {
+        initCollapsed: true,
+        description: 'Rendered as the "Follow Us" icon row in the footer.',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'platform',
+              type: 'select',
+              required: true,
+              admin: { width: '50%' },
+              options: [
+                { label: 'LinkedIn', value: 'linkedin' },
+                { label: 'Instagram', value: 'instagram' },
+                { label: 'X (Twitter)', value: 'x' },
+                { label: 'Facebook', value: 'facebook' },
+                { label: 'YouTube', value: 'youtube' },
+              ],
+            },
+            {
+              name: 'url',
+              type: 'text',
+              required: true,
+              admin: { width: '50%' },
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'columns',
       type: 'array',
-      maxRows: 4,
+      maxRows: 5,
       admin: {
         initCollapsed: true,
         components: {

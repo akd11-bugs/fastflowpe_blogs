@@ -1,4 +1,5 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
+import { Facebook, Instagram, Linkedin, X as XIcon, Youtube } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -7,11 +8,23 @@ import { Logo } from '@/components/Logo/Logo'
 
 import { FooterNewsletter } from './FooterNewsletter'
 
+// Same platform set used in utilities/organizationSchema.ts for the
+// Organization JSON-LD `sameAs` list — keep both in sync if a platform is
+// added or removed.
+const socialIcons = {
+  linkedin: Linkedin,
+  instagram: Instagram,
+  x: XIcon,
+  facebook: Facebook,
+  youtube: Youtube,
+} as const
+
 export async function Footer() {
   const footerData = await getCachedGlobal('footer', 1)()
 
   const columns = footerData?.columns || []
   const legalLinks = footerData?.legalLinks || []
+  const socialLinks = footerData?.socialLinks || []
   const year = new Date().getFullYear()
 
   return (
@@ -39,6 +52,50 @@ export async function Footer() {
               description={footerData?.newsletterDescription}
               form={footerData?.newsletterForm}
             />
+
+            {(footerData?.companyName || footerData?.companyAddress || footerData?.cin) && (
+              <div className="mt-8">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                  Connect with Us
+                </p>
+                {footerData?.companyName && (
+                  <p className="font-bold text-white mb-1">{footerData.companyName}</p>
+                )}
+                {footerData?.companyAddress && (
+                  <p className="whitespace-pre-line text-white/70 mb-4">
+                    {footerData.companyAddress}
+                  </p>
+                )}
+                {footerData?.cin && <p className="text-white/70">CIN - {footerData.cin}</p>}
+              </div>
+            )}
+
+            {socialLinks.length > 0 && (
+              <div className="mt-8">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                  Follow Us
+                </p>
+                <div className="flex items-center">
+                  {socialLinks.map((social, i) => {
+                    const Icon = social.platform ? socialIcons[social.platform] : null
+                    if (!Icon || !social.url) return null
+
+                    return (
+                      <a
+                        key={social.id || i}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.platform}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 mr-2 last:mr-0 transition-colors hover:border-white/40 hover:text-white"
+                      >
+                        <Icon className="h-4 w-4" />
+                      </a>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {columns.length > 0 && (

@@ -1916,6 +1916,50 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Rendered as an outline button, e.g. linking to a login page.
+   */
+  loginLink: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: 'outline' | null;
+  };
+  /**
+   * Rendered as a filled button with a trailing arrow.
+   */
+  signupLink: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: 'default' | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1931,6 +1975,28 @@ export interface Footer {
    * A Form (from Forms) with a single email field — rendered as a compact signup, not the full form layout.
    */
   newsletterForm?: (number | null) | Form;
+  /**
+   * Shown bold under "Connect with Us" in the footer, e.g. the legal entity name.
+   */
+  companyName?: string | null;
+  /**
+   * Multi-line registered address, shown under the company name in the footer.
+   */
+  companyAddress?: string | null;
+  /**
+   * Corporate Identification Number, shown under the address in the footer.
+   */
+  cin?: string | null;
+  /**
+   * Rendered as the "Follow Us" icon row in the footer.
+   */
+  socialLinks?:
+    | {
+        platform: 'linkedin' | 'instagram' | 'x' | 'facebook' | 'youtube';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   columns?:
     | {
         title: string;
@@ -1999,6 +2065,26 @@ export interface HeaderSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  loginLink?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  signupLink?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2011,6 +2097,16 @@ export interface FooterSelect<T extends boolean = true> {
   newsletterHeading?: T;
   newsletterDescription?: T;
   newsletterForm?: T;
+  companyName?: T;
+  companyAddress?: T;
+  cin?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
   columns?:
     | T
     | {

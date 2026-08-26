@@ -25,6 +25,22 @@ export const Header: GlobalConfig = {
         },
       },
     },
+    link({
+      appearances: ['outline'],
+      overrides: {
+        name: 'loginLink',
+        label: 'Login Button',
+        admin: { description: 'Rendered as an outline button, e.g. linking to a login page.' },
+      },
+    }),
+    link({
+      appearances: ['default'],
+      overrides: {
+        name: 'signupLink',
+        label: 'Sign Up Button',
+        admin: { description: 'Rendered as a filled button with a trailing arrow.' },
+      },
+    }),
   ],
   hooks: {
     afterChange: [revalidateHeader],
