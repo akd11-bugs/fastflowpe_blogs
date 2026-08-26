@@ -16,6 +16,15 @@ export const Header: GlobalConfig = {
         link({
           appearances: false,
         }),
+        {
+          name: 'showChevron',
+          type: 'checkbox',
+          label: 'Show dropdown chevron',
+          admin: {
+            description:
+              'Visual only for now — shows a small chevron next to the label (e.g. "Products ⌄"). No dropdown menu behind it yet.',
+          },
+        },
       ],
       maxRows: 6,
       admin: {
@@ -29,16 +38,21 @@ export const Header: GlobalConfig = {
       appearances: ['outline'],
       overrides: {
         name: 'loginLink',
-        label: 'Login Button',
-        admin: { description: 'Rendered as an outline button, e.g. linking to a login page.' },
+        label: 'Secondary Nav Link',
+        admin: {
+          description:
+            'Rendered as a plain text link at the right edge of the nav (e.g. "Sign Up"), not a button — despite the field name.',
+        },
       },
     }),
     link({
       appearances: ['default'],
       overrides: {
         name: 'signupLink',
-        label: 'Sign Up Button',
-        admin: { description: 'Rendered as a filled button with a trailing arrow.' },
+        label: 'Primary CTA Button',
+        admin: {
+          description: 'Rendered as the filled gradient button with a trailing arrow (e.g. "Book a demo").',
+        },
       },
     }),
   ],

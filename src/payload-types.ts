@@ -1913,11 +1913,15 @@ export interface Header {
           url?: string | null;
           label: string;
         };
+        /**
+         * Visual only for now — shows a small chevron next to the label (e.g. "Products ⌄"). No dropdown menu behind it yet.
+         */
+        showChevron?: boolean | null;
         id?: string | null;
       }[]
     | null;
   /**
-   * Rendered as an outline button, e.g. linking to a login page.
+   * Rendered as a plain text link at the right edge of the nav (e.g. "Sign Up"), not a button — despite the field name.
    */
   loginLink: {
     type?: ('reference' | 'custom') | null;
@@ -1939,7 +1943,7 @@ export interface Header {
     appearance?: 'outline' | null;
   };
   /**
-   * Rendered as a filled button with a trailing arrow.
+   * Rendered as the filled gradient button with a trailing arrow (e.g. "Book a demo").
    */
   signupLink: {
     type?: ('reference' | 'custom') | null;
@@ -2063,6 +2067,7 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        showChevron?: T;
         id?: T;
       };
   loginLink?:
