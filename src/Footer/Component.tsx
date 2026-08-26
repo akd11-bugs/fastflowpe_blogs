@@ -6,11 +6,13 @@ import React from 'react'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 
+import { FooterNewsletter } from './FooterNewsletter'
+
 // Same platform set used in utilities/organizationSchema.ts for the
 // Organization JSON-LD `sameAs` list — keep both in sync if a platform is
 // added or removed. `x` renders the classic bird glyph (lucide's `Twitter`),
-// not the X wordmark icon — matches the reference design, even though the
-// stored platform value/admin label still say "X (Twitter)".
+// not the X wordmark icon — the stored platform value/admin label still say
+// "X (Twitter)".
 const socialIcons = {
   linkedin: Linkedin,
   instagram: Instagram,
@@ -23,92 +25,119 @@ export async function Footer() {
   const footerData = await getCachedGlobal('footer', 1)()
 
   const columns = footerData?.columns || []
+  const legalLinks = footerData?.legalLinks || []
   const socialLinks = footerData?.socialLinks || []
   const year = new Date().getFullYear()
 
   return (
-    // Flat light-gray panel, not the previous black bordered card — matches
-    // the reference design. bg-muted/text-foreground (not hardcoded gray
-    // hex) so this still adapts under dark mode via the existing
-    // [data-theme='dark'] token overrides in globals.css.
-    <footer className="mt-auto bg-muted text-foreground">
-      {/* Margins instead of flexbox `gap` throughout this file — some
-          preview browsers (e.g. VS Code's built-in Simple Browser) don't
-          support `gap` on flex containers and silently drop it, fusing
-          everything together with zero space. Margins work everywhere. */}
-      <div className="container flex flex-col justify-between py-16 lg:flex-row">
-        <div className="mb-12 lg:mb-0 lg:mr-16 lg:max-w-xs">
-          <Link className="flex items-center mb-8" href="/">
-            <Logo />
-          </Link>
+    <footer className="relative mt-auto overflow-hidden bg-black text-white">
+      {/* Giant low-opacity wordmark bleeding behind the panel — pure CSS, no assets. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 select-none whitespace-nowrap text-center text-[18vw] font-bold leading-none text-white/5"
+      >
+        FastFlowPe
+      </div>
 
-          {(footerData?.companyName || footerData?.companyAddress || footerData?.cin) && (
-            <div>
-              <p className="font-bold text-foreground mb-4">Connect with Us</p>
-              {footerData?.companyName && (
-                <p className="text-sm text-muted-foreground">{footerData.companyName}</p>
-              )}
-              {footerData?.companyAddress && (
-                <p className="whitespace-pre-line text-sm text-muted-foreground">
-                  {footerData.companyAddress}
+      <div className="relative container pt-40 pb-10">
+        {/* Margins instead of flexbox `gap` throughout this file — some
+            preview browsers (e.g. VS Code's built-in Simple Browser) don't
+            support `gap` on flex containers and silently drop it, fusing
+            everything together with zero space. Margins work everywhere. */}
+        <div className="rounded-3xl border-2 border-white/10 bg-white/[0.03] p-8 md:p-12 flex flex-col md:flex-row md:justify-between">
+          <div className="md:max-w-xs mb-12 md:mb-0">
+            <Link className="flex items-center mb-8" href="/">
+              <Logo />
+            </Link>
+            <FooterNewsletter
+              heading={footerData?.newsletterHeading}
+              description={footerData?.newsletterDescription}
+              form={footerData?.newsletterForm}
+            />
+
+            {(footerData?.companyName || footerData?.companyAddress || footerData?.cin) && (
+              <div className="mt-8">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                  Connect with Us
                 </p>
-              )}
-              {footerData?.cin && (
-                <p className="text-sm text-muted-foreground">CIN - {footerData.cin}</p>
-              )}
-            </div>
-          )}
-
-          {socialLinks.length > 0 && (
-            <div className="mt-8">
-              <p className="font-bold text-foreground mb-4">Follow Us</p>
-              <div className="flex items-center">
-                {socialLinks.map((social, i) => {
-                  const Icon = social.platform ? socialIcons[social.platform] : null
-                  if (!Icon || !social.url) return null
-
-                  return (
-                    <a
-                      key={social.id || i}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.platform}
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-foreground mr-2 last:mr-0 shadow-sm transition-colors hover:bg-accent"
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  )
-                })}
+                {footerData?.companyName && (
+                  <p className="font-bold text-white mb-1">{footerData.companyName}</p>
+                )}
+                {footerData?.companyAddress && (
+                  <p className="whitespace-pre-line text-white/70 mb-4">
+                    {footerData.companyAddress}
+                  </p>
+                )}
+                {footerData?.cin && <p className="text-white/70">CIN - {footerData.cin}</p>}
               </div>
+            )}
+
+            {socialLinks.length > 0 && (
+              <div className="mt-8">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                  Follow Us
+                </p>
+                <div className="flex items-center">
+                  {socialLinks.map((social, i) => {
+                    const Icon = social.platform ? socialIcons[social.platform] : null
+                    if (!Icon || !social.url) return null
+
+                    return (
+                      <a
+                        key={social.id || i}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.platform}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 mr-2 last:mr-0 transition-colors hover:border-white/40 hover:text-white"
+                      >
+                        <Icon className="h-4 w-4" />
+                      </a>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {columns.length > 0 && (
+            <div className="flex flex-wrap">
+              {columns.map((column, i) => (
+                <div key={column.id || i} className="mr-12 mb-8">
+                  <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                    {column.title}
+                  </p>
+                  <nav className="flex flex-col">
+                    {(column.navItems || []).map(({ link }, j) => (
+                      <CMSLink
+                        className="text-white/70 hover:text-white mb-3 last:mb-0"
+                        key={j}
+                        {...link}
+                      />
+                    ))}
+                  </nav>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {columns.length > 0 && (
-          <div className="flex flex-wrap">
-            {columns.map((column, i) => (
-              <div key={column.id || i} className="mr-16 mb-10 last:mr-0">
-                <p className="font-bold text-foreground mb-4">{column.title}</p>
-                <nav className="flex flex-col">
-                  {(column.navItems || []).map(({ link }, j) => (
-                    <CMSLink
-                      className="text-sm text-muted-foreground hover:text-foreground mb-3 last:mb-0"
-                      key={j}
-                      {...link}
-                    />
-                  ))}
-                </nav>
-              </div>
-            ))}
+        <div className="border-t border-white/10 mt-8 pt-6 flex flex-col-reverse md:flex-row md:items-center md:justify-between text-sm text-white/50">
+          <p className="mt-4 md:mt-0">&copy; {year} FastFlowPe. All rights reserved.</p>
+          <div className="flex items-start md:items-center">
+            {legalLinks.length > 0 && (
+              <nav className="flex">
+                {legalLinks.map(({ link }, i) => (
+                  <CMSLink
+                    className="text-white/50 hover:text-white mr-6 last:mr-0"
+                    key={i}
+                    {...link}
+                  />
+                ))}
+              </nav>
+            )}
           </div>
-        )}
-      </div>
-
-      <div className="container border-t border-border py-6">
-        <p className="text-sm text-muted-foreground">
-          {year} &copy; {footerData?.companyName || 'FastFlowPe'}
-        </p>
+        </div>
       </div>
     </footer>
   )
