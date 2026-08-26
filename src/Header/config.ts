@@ -22,8 +22,35 @@ export const Header: GlobalConfig = {
           label: 'Show dropdown chevron',
           admin: {
             description:
-              'Visual only for now — shows a small chevron next to the label (e.g. "Products ⌄"). No dropdown menu behind it yet.',
+              'Only relevant if this item has no dropdown groups below — shows a small static chevron next to the label with no menu behind it. If dropdown groups ARE added, the chevron shows automatically and this is ignored.',
           },
+        },
+        {
+          name: 'dropdownGroups',
+          type: 'array',
+          maxRows: 4,
+          admin: {
+            initCollapsed: true,
+            description:
+              'Optional. If any groups are added here, this nav item renders as a hover/tap dropdown (like "Products" or "Industry" on fastflowpe.com) instead of a plain link — its own Link field above still needs a label, but its URL is then unused.',
+          },
+          fields: [
+            {
+              name: 'heading',
+              type: 'text',
+              admin: {
+                description:
+                  'Optional small heading above this group\'s links (e.g. "Collections"). Leave blank for a plain list — like the "Industry" dropdown, which has none.',
+              },
+            },
+            {
+              name: 'links',
+              type: 'array',
+              maxRows: 8,
+              admin: { initCollapsed: true },
+              fields: [link({ appearances: false })],
+            },
+          ],
         },
       ],
       maxRows: 6,
@@ -38,20 +65,18 @@ export const Header: GlobalConfig = {
       appearances: ['outline'],
       overrides: {
         name: 'loginLink',
-        label: 'Secondary Nav Link',
-        admin: {
-          description:
-            'Rendered as a plain text link at the right edge of the nav (e.g. "Sign Up"), not a button — despite the field name.',
-        },
+        label: 'Login Button',
+        admin: { description: 'Rendered as an outline button (e.g. "Login").' },
       },
     }),
     link({
       appearances: ['default'],
       overrides: {
         name: 'signupLink',
-        label: 'Primary CTA Button',
+        label: 'Sign Up Button',
         admin: {
-          description: 'Rendered as the filled gradient button with a trailing arrow (e.g. "Book a demo").',
+          description:
+            'Rendered as the filled brand-gradient button with a trailing arrow (e.g. "Sign Up").',
         },
       },
     }),

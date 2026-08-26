@@ -1,49 +1,41 @@
 'use client'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import { MobileNav } from './MobileNav'
 
 interface HeaderClientProps {
   data: Header
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  /* Storing the value in a useState to avoid hydration errors */
-  const [theme, setTheme] = useState<string | null>(null)
-  const { headerTheme, setHeaderTheme } = useHeaderTheme()
-  const pathname = usePathname()
-
-  useEffect(() => {
-    setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
-
   return (
-    <header
-      className="fixed top-3 md:top-4 inset-x-0 z-50 flex justify-center px-4"
-      {...(theme ? { 'data-theme': theme } : {})}
-    >
-      {/* Solid card, not the previous frosted-glass pill: w-full (capped by
-          max-w) so nav items and the Login/Sign Up buttons can spread to
-          the far edges, matching the reference layout, instead of a
-          content-hugging floating pill. Margin, not flex `gap` — see the
-          note in Footer/Component.tsx. */}
-      <div className="flex w-full max-w-6xl items-center rounded-2xl border border-border bg-background px-6 py-3 shadow-lg shadow-black/5">
-        <Link href="/" className="flex items-center shrink-0 mr-8">
-          <Logo loading="eager" priority="high" className="block h-7 w-auto" />
+    // Fixed insets from the viewport edges (left-2/right-2, wider at md),
+    // not a centered max-w container — matches fastflowpe.com exactly,
+    // confirmed via direct inspection of the live site rather than a
+    // screenshot: this bar has no max-width cap, it just keeps a constant
+    // gutter on either side at any viewport width. bg-white/70 +
+    // backdrop-blur-sm (not solid, not the old heavier blur-xl glass) is a
+    // fixed style now — the live site doesn't swap it for a dark variant
+    // over hero imagery, it relies on the blur/tint to stay legible over
+    // anything behind it, so the old per-page setHeaderTheme('dark'/'light')
+    // calls elsewhere are now harmless no-ops rather than something this
+    // component reads.
+    <header className="fixed top-3 md:top-6 left-2 md:left-8 right-2 md:right-8 z-50 rounded-[10px] bg-white/70 shadow-sm backdrop-blur-sm">
+      {/* relative: MobileNav's dropdown panel is `absolute inset-x-0
+          top-full` and needs THIS element as its positioned ancestor so it
+          spans the full header width, not just whatever narrow element it
+          happens to render next to. */}
+      <div className="relative flex flex-wrap items-center justify-between pl-4 pr-2 py-4 md:px-4">
+        <Link href="/" className="flex items-center shrink-0 space-x-3">
+          <Logo loading="eager" priority="high" className="h-8 w-auto md:h-10" />
         </Link>
         <HeaderNav data={data} />
+        <MobileNav data={data} />
       </div>
     </header>
   )
