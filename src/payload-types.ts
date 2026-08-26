@@ -209,6 +209,7 @@ export interface Page {
     | ContentBlock
     | MediaBlock
     | ArchiveBlock
+    | FeaturedPostsBlock
     | FormBlock
     | ProcessStepsBlock
     | FeatureSlidesBlock
@@ -633,6 +634,28 @@ export interface ArchiveBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedPostsBlock".
+ */
+export interface FeaturedPostsBlock {
+  /**
+   * Pick up to 3 posts to feature at the top of the page — the first one shown here renders larger (the "featured" spot), the rest render smaller alongside it. Not automatic; this is what visitors see first, so choose deliberately. Leave empty and the block simply won't render.
+   */
+  posts?: (number | Post)[] | null;
+  /**
+   * Manually place this block within the 12-column page grid. Leave defaults for normal full-width stacking.
+   */
+  gridPosition?: {
+    colStart?: number | null;
+    colSpan?: number | null;
+    rowStart?: number | null;
+    rowSpan?: number | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featuredPosts';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1223,6 +1246,7 @@ export interface PagesSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
+        featuredPosts?: T | FeaturedPostsBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         processSteps?: T | ProcessStepsBlockSelect<T>;
         featureSlides?: T | FeatureSlidesBlockSelect<T>;
@@ -1338,6 +1362,23 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   categories?: T;
   limit?: T;
   selectedDocs?: T;
+  gridPosition?:
+    | T
+    | {
+        colStart?: T;
+        colSpan?: T;
+        rowStart?: T;
+        rowSpan?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedPostsBlock_select".
+ */
+export interface FeaturedPostsBlockSelect<T extends boolean = true> {
+  posts?: T;
   gridPosition?:
     | T
     | {

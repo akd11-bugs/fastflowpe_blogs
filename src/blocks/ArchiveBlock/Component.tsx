@@ -11,12 +11,17 @@ import { BlogSchema } from '@/components/StructuredData/Blog'
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
     id?: string
+    /** Post IDs already shown in a featuredPosts block earlier on the same
+     *  page — see RenderBlocks.tsx. Not a CMS field; passed down so the
+     *  listing here never repeats a post the admin already featured above. */
+    excludeIds?: (string | number)[]
   }
 > = async (props) => {
   const {
     id,
     categories,
     description,
+    excludeIds,
     heading,
     introContent,
     limit: limitFromProps,
@@ -40,15 +45,12 @@ export const ArchiveBlock: React.FC<
       collection: 'posts',
       depth: 1,
       limit,
-      ...(flattenedCategories && flattenedCategories.length > 0
-        ? {
-            where: {
-              categories: {
-                in: flattenedCategories,
-              },
-            },
-          }
-        : {}),
+      where: {
+        ...(flattenedCategories && flattenedCategories.length > 0
+          ? { categories: { in: flattenedCategories } }
+          : {}),
+        ...(excludeIds && excludeIds.length > 0 ? { id: { not_in: excludeIds } } : {}),
+      },
     })
 
     posts = fetchedPosts.docs
