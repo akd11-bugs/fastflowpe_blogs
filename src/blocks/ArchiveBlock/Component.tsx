@@ -8,20 +8,11 @@ import RichText from '@/components/RichText'
 import { PostsExplorer } from '@/components/PostsExplorer'
 import { BlogSchema } from '@/components/StructuredData/Blog'
 
-export const ArchiveBlock: React.FC<
-  ArchiveBlockProps & {
-    id?: string
-    /** Post IDs already shown in a featuredPosts block earlier on the same
-     *  page — see RenderBlocks.tsx. Not a CMS field; passed down so the
-     *  listing here never repeats a post the admin already featured above. */
-    excludeIds?: (string | number)[]
-  }
-> = async (props) => {
+export const ArchiveBlock: React.FC<ArchiveBlockProps & { id?: string }> = async (props) => {
   const {
     id,
     categories,
     description,
-    excludeIds,
     heading,
     introContent,
     limit: limitFromProps,
@@ -49,7 +40,6 @@ export const ArchiveBlock: React.FC<
         ...(flattenedCategories && flattenedCategories.length > 0
           ? { categories: { in: flattenedCategories } }
           : {}),
-        ...(excludeIds && excludeIds.length > 0 ? { id: { not_in: excludeIds } } : {}),
       },
     })
 
@@ -65,7 +55,11 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className="my-16" id={`block-${id}`}>
+    // No margin here — RenderBlocks.tsx already wraps every block in its
+    // own `my-16`. A second one here doesn't collapse with it (the
+    // ScrollReveal wrapper in between blocks that), so it used to just add
+    // an extra ~64px dead gap above this section.
+    <div id={`block-${id}`}>
       <BlogSchema name={heading || 'FastFlowPe Blog'} description={description} posts={posts} />
       {/* Left-aligned and modestly sized on purpose — the hero above this
           block already carries the page's one big centered statement.

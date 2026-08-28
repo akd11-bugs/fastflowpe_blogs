@@ -28,7 +28,7 @@ export const Breadcrumbs: React.FC<{ items: Crumb[]; className?: string }> = ({
   }
 
   return (
-    <nav aria-label="Breadcrumb" className={cn('container mb-6', className)}>
+    <nav aria-label="Breadcrumb" className={cn('mb-6', className)}>
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger

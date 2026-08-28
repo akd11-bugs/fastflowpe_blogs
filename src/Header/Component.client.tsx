@@ -21,9 +21,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     // bg-white/70 + backdrop-blur tint stays legible over any hero behind
     // it, so this no longer needs to swap to a dark variant —
     // setHeaderTheme('dark'/'light') calls elsewhere are harmless no-ops.
-    // backdrop-blur-[4px], not the backdrop-blur-sm preset (8px in this
-    // Tailwind version) — live site measures blur(4px) exactly.
-    <header className="fixed top-3 md:top-6 left-2 md:left-8 right-2 md:right-8 z-50 rounded-[10px] bg-white/70 shadow-sm backdrop-blur-[4px]">
+    // bg-white/90 + backdrop-blur-md, not the live site's bg-white/70 +
+    // blur(4px): at 70% opacity + a light blur, bold dark headings
+    // scrolling underneath stayed legible enough to read through the
+    // header, reading as ghosted/duplicate text rather than a blurred
+    // backdrop. Higher opacity and a stronger blur properly obscure
+    // whatever scrolls underneath.
+    <header className="fixed top-3 md:top-6 left-2 md:left-8 right-2 md:right-8 z-50 rounded-[10px] bg-white/90 shadow-sm backdrop-blur-md">
       {/* relative: MobileNav's dropdown panel is `absolute inset-x-0
           top-full` and needs this as its positioned ancestor to span the
           full header width. */}

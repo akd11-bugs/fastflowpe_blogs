@@ -641,7 +641,19 @@ export interface ArchiveBlock {
  */
 export interface FeaturedPostsBlock {
   /**
-   * Pick up to 3 posts to feature at the top of the page — the first one shown here renders larger (the "featured" spot), the rest render smaller alongside it. Not automatic; this is what visitors see first, so choose deliberately. Leave empty and the block simply won't render.
+   * The page's H1, shown above the featured posts. Always renders, even if no posts are picked below.
+   */
+  heading?: string | null;
+  /**
+   * A one-line H2 shown directly below the H1, before the featured posts — a short subtitle for the page.
+   */
+  subheading?: string | null;
+  /**
+   * Short blurb shown beside the "Blogs" heading, next to the featured posts.
+   */
+  blogsIntro?: string | null;
+  /**
+   * Pick up to 3 posts to feature at the top of the page — the first one shown here renders larger (the "featured" spot), the rest render smaller alongside it in a compact list. Not automatic; this is what visitors see first, so choose deliberately. Leave empty and the block simply won't render.
    */
   posts?: (number | Post)[] | null;
   /**
@@ -1378,6 +1390,9 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
  * via the `definition` "FeaturedPostsBlock_select".
  */
 export interface FeaturedPostsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  blogsIntro?: T;
   posts?: T;
   gridPosition?:
     | T

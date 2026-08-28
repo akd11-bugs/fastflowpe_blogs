@@ -5,7 +5,6 @@ import { createSlugDeduper } from './slugify'
 export type HeadingEntry = {
   id: string
   text: string
-  level: 2 | 3
 }
 
 export type LexicalNode = {
@@ -26,9 +25,10 @@ export function nodeText(node: LexicalNode): string {
 }
 
 /**
- * Walks the post's Lexical document for h2/h3 headings, for the table of
- * contents. Only two levels — deeper headings read as noise in a jump-link
- * list, matching most "on this page" widgets.
+ * Walks the post's Lexical document for h2 headings, for the table of
+ * contents — top-level sections only, all rendered at the same flat level.
+ * H3/H4 read as noise in a jump-link list, matching most "on this page"
+ * widgets.
  *
  * Slugs are deduplicated by appending `-2`, `-3`, ... on repeats, so two
  * identically-worded headings ("Overview" in two sections) still get
@@ -44,10 +44,10 @@ export function extractHeadings(content: DefaultTypedEditorState | null | undefi
 
   const walk = (nodes: LexicalNode[]) => {
     for (const node of nodes) {
-      if (node.type === 'heading' && (node.tag === 'h2' || node.tag === 'h3')) {
+      if (node.type === 'heading' && node.tag === 'h2') {
         const text = nodeText(node).trim()
         if (text) {
-          headings.push({ id: nextId(text), text, level: node.tag === 'h2' ? 2 : 3 })
+          headings.push({ id: nextId(text), text })
         }
       }
       if (node.children) walk(node.children)

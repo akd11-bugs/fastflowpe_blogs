@@ -1,7 +1,6 @@
 'use client'
 import { cn } from '@/utilities/ui'
 import { stringToColor } from '@/utilities/stringToColor'
-import { stringToIcon } from '@/utilities/stringToIcon'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
@@ -60,30 +59,19 @@ export const Card: React.FC<{
   const authorName = populatedAuthors?.map((author) => author?.name).filter(Boolean)[0]
   const avatarColor = stringToColor(authorName || titleToUse || 'post')
 
-  const primaryCategoryTitle = validCategories[0]?.title || undefined
-  const accentColor = stringToColor(primaryCategoryTitle || titleToUse || 'post')
-
   return (
     <article
       className={cn(
-        'group relative h-full flex flex-col rounded-2xl overflow-hidden bg-card cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
+        'group relative h-full flex flex-col rounded-2xl overflow-hidden bg-background cursor-pointer transition-all duration-300',
+        !featured && 'hover:shadow-xl hover:-translate-y-1',
         className,
       )}
       ref={card.ref}
     >
-      {/* Bold color-block reveal — a solid accent bar grows in on hover instead of
-          a subtle fade, matching brand.dropbox.com's graphic/immediate hover language. */}
-      <div
-        className={cn(
-          'absolute inset-x-0 top-0 h-0 group-hover:h-2 transition-[height] duration-300 ease-out z-10',
-          accentColor.solidBg,
-        )}
-      />
-
       <div
         className={cn(
           'relative w-full overflow-hidden bg-muted',
-          featured ? 'aspect-[16/9]' : 'aspect-[16/10]',
+          featured ? 'aspect-[3/2] rounded-2xl border border-border p-px' : 'aspect-[16/10]',
         )}
       >
         {!imageToUse && (
@@ -93,52 +81,65 @@ export const Card: React.FC<{
         )}
         {imageToUse && typeof imageToUse !== 'string' && (
           <Media
+            fill
             resource={imageToUse}
             size={featured ? '66vw' : '33vw'}
-            imgClassName="object-cover w-full h-full"
+            imgClassName="object-cover"
           />
+        )}
+
+        {/* TechCrunch-style overlaid heading — the featured card's
+            category+title sit directly on the photo (dark gradient scrim
+            for legibility) instead of below it in the white body. */}
+        {featured && (hasCategories || titleToUse) && (
+          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 bg-gradient-to-t from-white/95 via-white/60 to-transparent dark:from-black/90 dark:via-black/50 dark:to-transparent p-6 pt-16 md:p-8 md:pt-20">
+            {hasCategories && (
+              <div className="flex flex-wrap gap-x-3 gap-y-1">
+                {validCategories.map((category, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center rounded-full bg-white/85 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#028DD0] backdrop-blur-md border border-white/30 shadow-xs dark:bg-white/20"
+                  >
+                    {category.title || 'Untitled category'}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {titleToUse && (
+              <h3 className="font-bold leading-snug line-clamp-2 tracking-tight text-2xl md:text-3xl text-black dark:text-white">
+                <Link className="not-prose transition-colors" href={href} ref={link.ref}>
+                  {titleToUse}
+                </Link>
+              </h3>
+            )}
+          </div>
         )}
       </div>
       {/* space-y/margin, not flex `gap` — see the note in Footer/Component.tsx. */}
-      <div className={cn('flex flex-col space-y-3 flex-1', featured ? 'p-6 md:p-8' : 'p-5')}>
-        {hasCategories && (
-          <div className="flex flex-wrap">
-            {validCategories.map((category, index) => {
-              const categoryTitle = category.title || 'Untitled category'
-              const color = stringToColor(categoryTitle)
-              const Icon = stringToIcon(categoryTitle)
-
-              return (
-                <span
-                  key={index}
-                  className={cn(
-                    'mr-2 mb-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide',
-                    color.solidBg,
-                    color.solidText,
-                  )}
-                >
-                  <Icon className="h-3 w-3 mr-1.5" />
-                  {categoryTitle}
-                </span>
-              )
-            })}
+      <div className={cn('flex flex-col space-y-3 flex-1', featured ? 'p-6 md:p-8' : 'p-5 pt-6')}>
+        {!featured && hasCategories && (
+          <div className="flex flex-wrap gap-x-3 gap-y-1">
+            {validCategories.map((category, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center rounded-full bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#028DD0] backdrop-blur-md border border-border/60 shadow-xs dark:bg-white/10"
+              >
+                {category.title || 'Untitled category'}
+              </span>
+            ))}
           </div>
         )}
 
-        {titleToUse && (
-          <h3
-            className={cn(
-              'font-bold leading-snug line-clamp-2 tracking-tight',
-              featured ? 'text-2xl md:text-3xl' : 'text-xl',
-            )}
-          >
+        {!featured && titleToUse && (
+          <h3 className="font-bold leading-snug line-clamp-2 tracking-tight text-xl">
             <Link className="not-prose text-foreground transition-colors" href={href} ref={link.ref}>
               {titleToUse}
             </Link>
           </h3>
         )}
 
-        {description && (
+        {!featured && description && (
           <p
             className={cn(
               'text-muted-foreground',
@@ -149,8 +150,8 @@ export const Card: React.FC<{
           </p>
         )}
 
-        <div className="flex items-center space-x-2 pt-2 mt-auto border-t border-border text-xs text-muted-foreground">
-          {authorName && (
+        <div className="flex items-center space-x-2 pt-2 mt-auto text-xs text-muted-foreground">
+          {featured && authorName && (
             <div
               className={cn(
                 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold uppercase',
@@ -161,8 +162,8 @@ export const Card: React.FC<{
               {authorName.charAt(0)}
             </div>
           )}
-          {authorName && <span className="font-medium text-foreground">{authorName}</span>}
-          {authorName && (publishedAt || readingTime) && <span aria-hidden>&middot;</span>}
+          {featured && authorName && <span className="font-medium text-foreground">{authorName}</span>}
+          {featured && authorName && (publishedAt || readingTime) && <span aria-hidden>&middot;</span>}
           {publishedAt && <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>}
           {publishedAt && readingTime && <span aria-hidden>&middot;</span>}
           {readingTime && <span>{readingTime} min read</span>}

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -12,6 +11,8 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { ParallaxImage } from '@/heros/PostHero/ParallaxImage'
+import { formatAuthors } from '@/utilities/formatAuthors'
+import { formatDateTime } from '@/utilities/formatDateTime'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getReadingTime } from '@/utilities/getReadingTime'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -66,9 +67,13 @@ export default async function Post({ params: paramsPromise }: Args) {
     (category): category is Exclude<typeof category, number> => typeof category === 'object',
   )
   const otherHighlights = await queryRecentPosts({ excludeId: post.id })
+  const hasAuthors =
+    post.populatedAuthors &&
+    post.populatedAuthors.length > 0 &&
+    formatAuthors(post.populatedAuthors) !== ''
 
   return (
-    <article className="pt-16 pb-16">
+    <article className="pt-28 pb-16">
       <PageClient />
       <BlogPostingSchema post={post} />
 
@@ -82,20 +87,22 @@ export default async function Post({ params: paramsPromise }: Args) {
       {/* No separate posts listing page — the blog IS the homepage now, so
           "Blog" points there instead of the removed /posts index. Category
           isn't a link: there's no per-category filtered view to send it to. */}
-      <Breadcrumbs
-        className="mx-auto max-w-[48rem]"
-        items={[
-          { label: 'Blog', href: '/' },
-          ...postCategories.slice(0, 1).map((category) => ({
-            label: category.title || 'Untitled category',
-          })),
-          { label: post.title },
-        ]}
-      />
+      <div className="container-wide">
+        <Breadcrumbs
+          className="lg:ml-[168px] lg:mr-[168px]"
+          items={[
+            { label: 'Blog', href: '/' },
+            ...postCategories.slice(0, 1).map((category) => ({
+              label: category.title || 'Untitled category',
+            })),
+            { label: post.title },
+          ]}
+        />
+      </div>
 
       {/* Heading only — the image now lives in the grid below, in the same
           column as the article content. */}
-      <PostHero post={post} readingTime={readingTime} />
+      <PostHero post={post} url={`${getServerSideURL()}${url}`} />
 
       <div className="container-wide">
         {/* Image (row 1) and content (row 2) share grid column 1; the
@@ -108,14 +115,14 @@ export default async function Post({ params: paramsPromise }: Args) {
             are always exactly the same width: the grid computes column 1's
             width once, for both rows, at every viewport — nothing to keep
             in sync by hand. */}
-        <div className="lg:grid lg:ml-[14%] lg:mr-[8%] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
-          {/* Percentage margins, not a fixed rem/max-w+mx-auto pair: a fixed
-              offset doesn't scale with viewport width (it read as negligible
-              on a wide monitor, excessive on a narrow one), and mx-auto only
-              gives an equal split. ml-14%/mr-8% scales with the viewport on
-              both sides while keeping the left gap bigger than the right —
-              no explicit max-w needed, since the grid's own width is just
-              whatever's left after these margins, and the article column's
+        <div className="lg:grid lg:ml-[168px] lg:mr-[168px] lg:grid-cols-[1fr_320px] lg:gap-16 lg:items-start">
+          {/* Fixed margins, not a percentage: a percentage kept growing the
+              dead space on wide monitors. 168px here plus container-wide's
+              own 32px padding = a 200px total inset from the viewport edge.
+              Equal ml/mr on both sides keeps the content's left inset the
+              same as the sidebar's right inset — no explicit max-w needed, since
+              the grid's own width is just whatever's left after these
+              margins, and the article column's
               actual reading width is separately capped by RichText's own
               `prose` class, not by this grid. The margin lives on the grid
               itself, not per-child, so column 1's left edge is set once and
@@ -125,17 +132,36 @@ export default async function Post({ params: paramsPromise }: Args) {
               before the margins shrink it, causing overflow — grid's default
               stretch (width:auto) already fills the cell correctly. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
-            <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl lg:col-start-1 lg:row-start-1 lg:mt-0 lg:w-auto">
+            <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border/80 bg-muted/50 p-[0.5px] lg:col-start-1 lg:row-start-1 lg:mt-12 lg:w-[calc(100%+9rem)]">
+              {/* Wider than the text column on purpose — sized to cover 80%
+                  of the row (text column + gap-16 + part of the sidebar's
+                  column width). Safe to overflow into column 2 here: this
+                  image sits in row 1, and the sidebar only occupies row 2,
+                  so there's nothing under it to collide with. */}
               {/* 16/9, not 21/9: the source images run close to a 3:2 ratio,
                   so the old ultra-wide 21/9 crop box was cutting off the top
                   and bottom of the illustration under object-cover. 16/9
                   keeps a cinematic hero band while showing much more of the
                   image. */}
-              <ParallaxImage imgClassName="object-cover" resource={post.heroImage} />
+              <ParallaxImage imgClassName="object-cover object-top rounded-[calc(1rem-1px)]" resource={post.heroImage} />
             </div>
           )}
 
           <div className="mt-10 max-w-[48rem] mx-auto lg:col-start-1 lg:row-start-2 lg:mt-10 lg:max-w-none">
+            {/* Byline/date/reading-time — sits under the hero image now,
+                not above the title (see PostHero). */}
+            <div className="mb-10 flex flex-col space-y-3 text-sm text-muted-foreground md:flex-row md:items-center md:space-y-0 md:space-x-6">
+              {hasAuthors && (
+                <span className="font-medium text-foreground">
+                  {formatAuthors(post.populatedAuthors ?? [])}
+                </span>
+              )}
+              {post.publishedAt && (
+                <time dateTime={post.publishedAt}>{formatDateTime(post.publishedAt)}</time>
+              )}
+              {readingTime && <span>{readingTime} min read</span>}
+            </div>
+
             {/* On mobile, the TOC still leads the article — the sidebar
                 column below only exists from lg up. */}
             {headings.length > 1 && (
@@ -155,11 +181,6 @@ export default async function Post({ params: paramsPromise }: Args) {
           <aside className="mt-10 max-w-[48rem] mx-auto lg:col-start-2 lg:row-start-2 lg:mx-0 lg:mt-10 lg:sticky lg:top-32 space-y-6">
             {headings.length > 1 && <TableOfContents headings={headings} />}
             <PostSidebar
-              categories={postCategories.map((category) => ({
-                id: String(category.id),
-                title: category.title || 'Untitled category',
-                slug: category.slug,
-              }))}
               highlights={[
                 // The article being read appears in its own highlights list —
                 // marked active, the same "you are here" role the TOC plays
@@ -171,18 +192,9 @@ export default async function Post({ params: paramsPromise }: Args) {
                 })),
               ]}
               activeHighlightSlug={post.slug}
-              title={post.title}
-              url={`${getServerSideURL()}${url}`}
             />
           </aside>
         </div>
-
-        {post.relatedPosts && post.relatedPosts.length > 0 && (
-          <RelatedPosts
-            className="mt-12 max-w-[52rem] mx-auto lg:max-w-none lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-            docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-          />
-        )}
       </div>
     </article>
   )

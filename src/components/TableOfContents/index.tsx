@@ -1,12 +1,13 @@
 'use client'
 
+import { AlignLeft } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import type { HeadingEntry } from '@/utilities/extractHeadings'
 import { cn } from '@/utilities/ui'
 
 /**
- * Jump-link list built from the post's own h2/h3 headings — see
+ * Jump-link list built from the post's own h2 headings — see
  * utilities/extractHeadings.ts. Plain anchor hrefs, no JS required for
  * navigation itself: RichText's heading converter stamps the matching `id`
  * on each rendered heading from the exact same slug sequence.
@@ -68,7 +69,8 @@ export const TableOfContents: React.FC<{ headings: HeadingEntry[] }> = ({ headin
       aria-label="On this page"
       className="border-2 border-border rounded-2xl bg-card p-6"
     >
-      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
+      <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
+        <AlignLeft className="h-3.5 w-3.5" />
         On this page
       </p>
       <div className="relative flex">
@@ -86,7 +88,7 @@ export const TableOfContents: React.FC<{ headings: HeadingEntry[] }> = ({ headin
           {headings.map((heading) => {
             const isActive = heading.id === activeId
             return (
-              <li key={heading.id} className={heading.level === 3 ? 'ml-5' : undefined}>
+              <li key={heading.id}>
                 <a
                   href={`#${heading.id}`}
                   className={cn(
