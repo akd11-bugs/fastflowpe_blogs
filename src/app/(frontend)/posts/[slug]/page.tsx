@@ -10,7 +10,7 @@ import RichText from '@/components/RichText'
 import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
-import { ParallaxImage } from '@/heros/PostHero/ParallaxImage'
+import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { generateMeta } from '@/utilities/generateMeta'
@@ -132,18 +132,25 @@ export default async function Post({ params: paramsPromise }: Args) {
               before the margins shrink it, causing overflow — grid's default
               stretch (width:auto) already fills the cell correctly. */}
           {post.heroImage && typeof post.heroImage === 'object' && (
-            <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border/80 bg-muted/50 p-[0.5px] lg:col-start-1 lg:row-start-1 lg:mt-12 lg:w-[calc(100%+9rem)]">
+            <div className="relative mt-10 w-full rounded-2xl border border-border/80 bg-muted/50 p-[0.5px] lg:col-start-1 lg:row-start-1 lg:mt-12 lg:w-[calc(100%+9rem)]">
               {/* Wider than the text column on purpose — sized to cover 80%
                   of the row (text column + gap-16 + part of the sidebar's
                   column width). Safe to overflow into column 2 here: this
                   image sits in row 1, and the sidebar only occupies row 2,
                   so there's nothing under it to collide with. */}
-              {/* 16/9, not 21/9: the source images run close to a 3:2 ratio,
-                  so the old ultra-wide 21/9 crop box was cutting off the top
-                  and bottom of the illustration under object-cover. 16/9
-                  keeps a cinematic hero band while showing much more of the
-                  image. */}
-              <ParallaxImage imgClassName="object-cover object-top rounded-[calc(1rem-1px)]" resource={post.heroImage} />
+              {/* No fixed aspect-ratio box and no object-cover: those forced
+                  every image into a crop (a 3:2 source into a 16:9 box always
+                  loses its top or bottom). Rendering at the resource's own
+                  intrinsic width/height instead (no `fill`) shows the whole
+                  image, uncropped, at its natural ratio — width still fills
+                  the column, height follows from that automatically. No
+                  parallax here either — this is a reading page, not a
+                  landing showcase. */}
+              <Media
+                priority
+                imgClassName="w-full h-auto rounded-[calc(1rem-1px)]"
+                resource={post.heroImage}
+              />
             </div>
           )}
 
