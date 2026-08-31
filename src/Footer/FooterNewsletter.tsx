@@ -68,20 +68,20 @@ export const FooterNewsletter: React.FC<{
 
   return (
     <div>
-      {heading && <h3 className="text-2xl font-bold mb-2">{heading}</h3>}
+      {heading && <h3 className="text-2xl font-bold mb-2 text-black">{heading}</h3>}
       {description && !hasSubmitted && (
-        <p className="text-sm text-white/60 mb-4 max-w-xs">{description}</p>
+        <p className="text-sm text-black/60 mb-4 max-w-xs">{description}</p>
       )}
 
       {hasSubmitted ? (
         form.confirmationType === 'message' && form.confirmationMessage ? (
-          <RichText className="text-white" data={form.confirmationMessage} enableGutter={false} />
+          <RichText className="text-black" data={form.confirmationMessage} enableGutter={false} />
         ) : (
-          <p className="text-white">Thanks. You&apos;re on the list.</p>
+          <p className="text-black">Thanks. You&apos;re on the list.</p>
         )
       ) : (
         <form onSubmit={onSubmit} className="flex max-w-xs">
-          <div className="flex items-center w-full rounded-full bg-white pl-4 pr-1 py-1">
+          <div className="flex items-center w-full rounded-full border border-black/10 bg-black/5 pl-4 pr-1 py-1">
             <input
               type={field.blockType === 'email' ? 'email' : 'text'}
               required={Boolean(field.required)}
@@ -101,7 +101,7 @@ export const FooterNewsletter: React.FC<{
           </div>
         </form>
       )}
-      {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
     </div>
   )
 }

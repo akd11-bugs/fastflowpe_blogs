@@ -30,11 +30,11 @@ export async function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-black text-white">
+    <footer className="relative mt-auto overflow-hidden bg-white text-black">
       {/* Giant low-opacity wordmark bleeding behind the panel — pure CSS, no assets. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 select-none whitespace-nowrap text-center text-[18vw] font-bold leading-none text-white/5"
+        className="pointer-events-none absolute inset-x-0 top-0 select-none whitespace-nowrap text-center text-[18vw] font-bold leading-none text-black/8"
       >
         FastFlowPe
       </div>
@@ -44,7 +44,7 @@ export async function Footer() {
             preview browsers (e.g. VS Code's built-in Simple Browser) don't
             support `gap` on flex containers and silently drop it, fusing
             everything together with zero space. Margins work everywhere. */}
-        <div className="rounded-3xl border-2 border-white/10 bg-white/[0.03] p-8 md:p-12 flex flex-col md:flex-row md:justify-between">
+        <div className="rounded-3xl border border-black/10 bg-white/10 backdrop-blur-md text-black p-8 md:p-12 flex flex-col md:flex-row md:justify-between shadow-xl">
           <div className="md:max-w-xs mb-12 md:mb-0">
             <Link className="flex items-center mb-8" href="/">
               <Logo />
@@ -57,24 +57,24 @@ export async function Footer() {
 
             {(footerData?.companyName || footerData?.companyAddress || footerData?.cin) && (
               <div className="mt-8">
-                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-black/50 mb-4">
                   Connect with Us
                 </p>
                 {footerData?.companyName && (
-                  <p className="font-bold text-white mb-1">{footerData.companyName}</p>
+                  <p className="font-bold text-black mb-1">{footerData.companyName}</p>
                 )}
                 {footerData?.companyAddress && (
-                  <p className="whitespace-pre-line text-white/70 mb-4">
+                  <p className="whitespace-pre-line text-black/70 mb-4">
                     {footerData.companyAddress}
                   </p>
                 )}
-                {footerData?.cin && <p className="text-white/70">CIN - {footerData.cin}</p>}
+                {footerData?.cin && <p className="text-black/70">CIN - {footerData.cin}</p>}
               </div>
             )}
 
             {socialLinks.length > 0 && (
               <div className="mt-8">
-                <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-black/50 mb-4">
                   Follow Us
                 </p>
                 <div className="flex items-center">
@@ -89,7 +89,7 @@ export async function Footer() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.platform}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 mr-2 last:mr-0 transition-colors hover:border-white/40 hover:text-white"
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-black/5 text-black/70 mr-2 last:mr-0 transition-colors hover:border-black/40 hover:text-black"
                       >
                         <Icon className="h-4 w-4" />
                       </a>
@@ -104,13 +104,13 @@ export async function Footer() {
             <div className="flex flex-wrap">
               {columns.map((column, i) => (
                 <div key={column.id || i} className="mr-12 mb-8">
-                  <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-black/50 mb-4">
                     {column.title}
                   </p>
                   <nav className="flex flex-col">
                     {(column.navItems || []).map(({ link }, j) => (
                       <CMSLink
-                        className="text-white/70 hover:text-white mb-3 last:mb-0"
+                        className="text-black/70 hover:text-black mb-3 last:mb-0"
                         key={j}
                         {...link}
                       />
@@ -122,14 +122,14 @@ export async function Footer() {
           )}
         </div>
 
-        <div className="border-t border-white/10 mt-8 pt-6 flex flex-col-reverse md:flex-row md:items-center md:justify-between text-sm text-white/50">
+        <div className="border-t border-black/10 mt-8 pt-6 flex flex-col-reverse md:flex-row md:items-center md:justify-between text-sm text-black/50">
           <p className="mt-4 md:mt-0">&copy; {year} FastFlowPe. All rights reserved.</p>
           <div className="flex items-start md:items-center">
             {legalLinks.length > 0 && (
               <nav className="flex">
                 {legalLinks.map(({ link }, i) => (
                   <CMSLink
-                    className="text-white/50 hover:text-white mr-6 last:mr-0"
+                    className="text-black/50 hover:text-black mr-6 last:mr-0"
                     key={i}
                     {...link}
                   />
