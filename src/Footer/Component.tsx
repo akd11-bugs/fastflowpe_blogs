@@ -30,21 +30,21 @@ export async function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-white text-black">
-      {/* Giant low-opacity wordmark bleeding behind the panel — pure CSS, no assets. */}
+    <footer className="relative mt-auto overflow-hidden bg-[#F2F3F3] text-black">
+      {/* Giant low-opacity wordmark bleeding behind the flat footer — pure CSS, no assets. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 select-none whitespace-nowrap text-center text-[18vw] font-bold leading-none text-black/8"
+        className="pointer-events-none absolute inset-x-0 top-0 select-none whitespace-nowrap text-center text-[18vw] font-bold leading-none text-black/[0.04]"
       >
         FastFlowPe
       </div>
 
-      <div className="relative container pt-40 pb-10">
+      <div className="relative container pt-56 pb-16">
         {/* Margins instead of flexbox `gap` throughout this file — some
             preview browsers (e.g. VS Code's built-in Simple Browser) don't
             support `gap` on flex containers and silently drop it, fusing
             everything together with zero space. Margins work everywhere. */}
-        <div className="rounded-3xl border border-black/10 bg-white/10 backdrop-blur-md text-black p-8 md:p-12 flex flex-col md:flex-row md:justify-between shadow-xl">
+        <div className="flex flex-col md:flex-row md:justify-between">
           <div className="md:max-w-xs mb-12 md:mb-0">
             <Link className="flex items-center mb-8" href="/">
               <Logo />
@@ -89,7 +89,7 @@ export async function Footer() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.platform}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-black/5 text-black/70 mr-2 last:mr-0 transition-colors hover:border-black/40 hover:text-black"
+                        className="flex h-9 w-9 items-center justify-center rounded-md border border-black/10 bg-white text-black/70 mr-2 last:mr-0 transition-colors hover:border-black/40 hover:text-black"
                       >
                         <Icon className="h-4 w-4" />
                       </a>

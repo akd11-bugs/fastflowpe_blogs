@@ -135,7 +135,7 @@
   --card-foreground: oklch(14.5% 0 0deg);
   --popover: oklch(100% 0 0deg);
   --popover-foreground: oklch(14.5% 0 0deg);
-  --primary: oklch(20.5% 0 0deg);
+  --primary: oklch(64.341% 0.00007 271.152);
   --primary-foreground: oklch(98.5% 0 0deg);
   --secondary: oklch(97% 0 0deg);
   --secondary-foreground: oklch(20.5% 0 0deg);
@@ -672,26 +672,7 @@ html[data-theme='light'] {
   }
 }
 
-/* ==========================================================================
-   Process panels — plain full-bleed colour bands
-   ==========================================================================
 
-   Was a GSAP ScrollTrigger pin-and-stack effect; removed in favour of a
-   static page like juspay.io's blog — no scroll-jacking, no scrubbed motion.
-   What's left is the visual identity (giant type, mono counter, full-bleed
-   colour per step) as ordinary stacked sections in normal document flow.
-
-   Panels MUST still be opaque even though nothing stacks on top of them
-   anymore — an unset background would show `body`'s colour bleeding through
-   at the panel's own edges on some browsers' subpixel rounding.
-
-   Tones are addressed by `data-panel-tone` rather than :nth-child so that
-   adding a heading band or a closing element can't silently re-colour every
-   panel. They cycle, so any number of CMS steps works.
-
-   Dark mode does not simply invert: the light set's off-white panel becomes a
-   slate tone, because a bright near-white band on an otherwise dark page
-   reads as a mistake, not a design choice. */
 @layer components {
   .process-panel {
     background-color: var(--panel-bg);
@@ -704,27 +685,9 @@ html[data-theme='light'] {
     border-color: color-mix(in oklab, var(--panel-fg) 40%, var(--panel-bg));
   }
 
-  /* Mixed toward the panel BACKGROUND, not toward `transparent`. An alpha
-     colour composites to the same thing visually but reports its pre-blend
-     value to getComputedStyle, so a contrast audit silently measures the
-     undimmed colour and passes when the rendered text does not. Opaque mixing
-     keeps the measured value honest.
-
-     The dimming is expressed as per-tone SELECTORS rather than a
-     `color-mix(... var(--x) ...)` percentage, because a var() in color-mix's
-     percentage position fails to parse in Tailwind v4's Lightning CSS and
-     takes the whole production build down with an opaque
-     `__turbopack_context__.a is not a function` from postcss — a literal
-     percentage is the only form that survives. */
   .process-panel .panel-dim {
     color: color-mix(in oklab, var(--panel-fg) 82%, var(--panel-bg));
   }
-
-  /* Headroom is not uniform. White on the dark tones clears 14:1 and absorbs
-     dimming easily; near-black on mid-luminance brand blue tops out near
-     5.5:1, where any dimming at all drops small mono copy below AA — so that
-     one tone keeps its copy at full strength in light mode. Dark mode's tone 0
-     is a much deeper blue with ~10:1 of headroom, so it dims normally. */
   .process-panel[data-panel-tone='0'] .panel-dim {
     color: var(--panel-fg);
   }
